@@ -1,0 +1,62 @@
+[
+  {
+    "Id": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743",
+    "Name": "Hotel Central",
+    "Address": "Calle Principal 1, Santa Rosa de Copan",
+    "StarsMichelin": 4,
+    "NumberPhone": 90411336,
+    "Description": "Hotel Central es un lugar acogedor situado en el corazón de Santa Rosa de Copan. Ofrece un ambiente tranquilo y todas las comodidades necesarias para una estancia relajante. Ideal para quienes buscan explorar la ciudad y disfrutar de su rica cultura.",
+    "ImageUrl": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/01/58/59/hotel-exterior.jpg?w=1200&h=-1&s=1",
+    "Overview": "Hotel acogedor en el centro de Santa Rosa."
+  },
+  {
+    "Id": "9537ea02-93bf-4338-bf25-5b565d247a9f",
+    "Name": "Hotel del Mar",
+    "Address": "Avenida Costera 456, Puerto Cortes",
+    "StarsMichelin": 5,
+    "NumberPhone": 81706534,
+    "Description": "Hotel del Mar es un lujoso establecimiento ubicado frente a la playa en Puerto Cortés. Con cinco estrellas Michelin, es perfecto para quienes buscan una experiencia de lujo y relajación. Disfruta de impresionantes vistas al mar y servicios de primera clase.",
+    "ImageUrl": "https://content.r9cdn.net/himg/ca/92/12/ice-55339-73817713_3XL-651930.jpg",
+    "Overview": "Lujo frente al mar en Puerto Cortés."
+  },
+  {
+    "Id": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92",
+    "Name": "Hotel La Esperanza",
+    "Address": "Calle de los Pinos 789, La Esperanza",
+    "StarsMichelin": 3,
+    "NumberPhone": 92304567,
+    "Description": "Hotel La Esperanza es un cómodo alojamiento en el pintoresco pueblo de La Esperanza. Con un ambiente familiar y todas las comodidades esenciales, es ideal para viajeros que buscan una estancia agradable en un entorno natural.",
+    "ImageUrl": "https://res.cloudinary.com/weekendesk/images/s--wK7RTHC6--/c_fill,f_auto,g_auto,q_50,w_750/mo52ybhnvb7xtblll9ic/escapada-rural-a-llavorsi.jpg",
+    "Overview": "Alojamiento cómodo en La Esperanza."
+  },
+  {
+    "Id": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9",
+    "Name": "Hotel Las Colinas",
+    "Address": "Calle Las Colinas 123, Tegucigalpa",
+    "StarsMichelin": 4,
+    "NumberPhone": 98765432,
+    "Description": "Hotel Las Colinas ofrece una estancia cómoda y moderna en la vibrante ciudad de Tegucigalpa. Con una ubicación estratégica cerca de las principales atracciones, es ideal para turistas y viajeros de negocios. Disfruta de su ambiente acogedor y servicios de calidad.",
+    "ImageUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/275904061.jpg?k=737d56c6824aa03e5edc39fc33e0581591adc8970889f61ce2c6d525b4959109&o=&hp=1",
+    "Overview": "Estancia cómoda en Tegucigalpa."
+  },
+  {
+    "Id": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216",
+    "Name": "Hotel Vista Hermosa",
+    "Address": "Carretera Panamericana km 15, Danlí",
+    "StarsMichelin": 3,
+    "NumberPhone": 87654321,
+    "Description": "Hotel Vista Hermosa es un refugio tranquilo situado en las colinas de Danlí. Ofrece vistas panorámicas impresionantes y un entorno natural que invita al descanso. Es el lugar perfecto para desconectar y disfrutar de la naturaleza en un ambiente acogedor.",
+    "ImageUrl": "https://hips.hearstapps.com/hmg-prod/images/mim-ibiza-nocturna-1623928445.jpg",
+    "Overview": "Refugio tranquilo en las colinas de Danlí."
+  },
+  {
+    "Id": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4",
+    "Name": "Hotel El Paraíso",
+    "Address": "Boulevard El Paraíso 567, Choluteca",
+    "StarsMichelin": 5,
+    "NumberPhone": 76543210,
+    "Description": "Hotel El Paraíso es un exclusivo hotel de cinco estrellas situado en el corazón de Choluteca. Con instalaciones de lujo y un servicio excepcional, es ideal para quienes buscan una experiencia única y sofisticada. Disfruta de su restaurante gourmet y spa de primera clase.",
+    "ImageUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/48402345.webp?k=22888222c82e95cee2534d4b34f69e65ddf584eef72732281fd91f29fa8876e5&o=",
+    "Overview": "Lujo y sofisticación en Choluteca."
+  }
+]

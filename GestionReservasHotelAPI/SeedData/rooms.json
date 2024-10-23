@@ -1,0 +1,482 @@
+[
+  {
+    "Id": "9e47e478-33d6-4a8c-bd35-72d6a090f3fe",
+    "NumberRoom": 101,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 50,
+    "ImageUrl": "https://www.cataloniahotels.com/es/blog/wp-content/uploads/2024/01/tipos-habitaciones-hotel.jpg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "6caa14bf-557d-424b-bb5d-28b48af7ea36",
+    "NumberRoom": 102,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 70,
+    "ImageUrl": "https://www.infobae.com/new-resizer/JSigyxlGx_G2D-A1YVRvZiwuoec=/filters:format(webp):quality(85)/s3.amazonaws.com/arc-wordpress-client-uploads/infobae-wp/wp-content/uploads/2019/05/20152451/Mandarin-Oriental-Hong-Kong-3.jpg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "0926f04a-9682-49e2-8d6e-74b0825514ec",
+    "NumberRoom": 103,
+    "TypeRoom": "SUITE",
+    "PriceNight": 120,
+    "ImageUrl": "https://emprendedores.es/wp-content/uploads/iStock-907621754-e1639556826504-1024x576.jpg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "20586f88-060d-42b8-bb1e-e163d06b2221",
+    "NumberRoom": 104,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 55,
+    "ImageUrl": "https://static.abc.es/Media/201504/27/hotel12--644x362.jpg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "55e76dff-138c-40b5-856c-9a34e4d75fdb",
+    "NumberRoom": 105,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 75,
+    "ImageUrl": "https://www.sofitelbarucalablanca.com/wp-content/uploads/sites/19/2023/04/DUF_8644-v-ok-1170x780.jpg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "fe857629-1a2f-41d1-9178-9ed3bf1bfce4",
+    "NumberRoom": 106,
+    "TypeRoom": "SUITE",
+    "PriceNight": 130,
+    "ImageUrl": "https://images.mirai.com/INFOROOMS/100376355/gMTRa4gTj2qTSjgroLJ5/gMTRa4gTj2qTSjgroLJ5_large.jpg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "d4b2b5bc-a5c8-4a75-85a0-78f21b3ee5e2",
+    "NumberRoom": 107,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 60,
+    "ImageUrl": "https://www.stanzahotel.com/wp-content/uploads/2023/10/habitacion_Sencilla_5.jpg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "2a58d6de-3b1f-496c-9e5f-abea253fc55a",
+    "NumberRoom": 108,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 80,
+    "ImageUrl": "https://i.pinimg.com/originals/da/39/ce/da39ceccbd966c17c74c016e311e1ec2.png",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "ee837807-b5bd-4d66-ba1a-b16fd3de9ed1",
+    "NumberRoom": 109,
+    "TypeRoom": "SUITE",
+    "PriceNight": 140,
+    "ImageUrl": "https://www.sambahotels.com/media/items/big/archivo_000--6-.jpeg",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "e812455c-17fa-4f50-ad81-9cc08ddf46da",
+    "NumberRoom": 110,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 65,
+    "ImageUrl": "https://www.mator.es/wp-content/webpc-passthru.php?src=https://www.mator.es/wp-content/uploads/2020/09/limpiezahabitaciondehotel.jpg&nocache=1",
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "23b81be9-32c7-4d31-9d6e-05663b3e5a4a",
+    "NumberRoom": 201,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 85,
+    "ImageUrl": "https://www.hotelmurcianelva.com/wp-content/uploads/sites/2492/nggallery/content-img//mobile_habitaciones_01_cabecera-copy.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "585bc870-2352-4309-bc00-33c19c3e3a99",
+    "NumberRoom": 202,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 70,
+    "ImageUrl": "https://www.hotelbahiasantander.com/wp-content/uploads/sites/1938/nggallery/location//bahia_mobile_habitaciones_01_cabecera-copy.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "c8c9b556-2c7c-4a5c-a714-7a6bb27e9d28",
+    "NumberRoom": 203,
+    "TypeRoom": "SUITE",
+    "PriceNight": 150,
+    "ImageUrl": "https://i0.wp.com/presidenteicpuebla.com/wp-content/uploads/2021/10/hoteles-de-lujo-en-puebla-clasica.jpg?fit=1075%2C695&ssl=1",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "5e728c39-e627-4895-b21a-8a4ebe213eed",
+    "NumberRoom": 204,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 90,
+    "ImageUrl": "https://static-resources-elementor.mirai.com/wp-content/uploads/sites/346/Image-3.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "f5c762c4-cf63-4fe9-951f-5d0699855d6c",
+    "NumberRoom": 205,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 75,
+    "ImageUrl": "https://img.freepik.com/fotos-premium/habitaciones-hotel-modernas-elegantes_1417-8488.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "6b18d3ac-cde9-40f6-a86a-e607b48ecdf4",
+    "NumberRoom": 206,
+    "TypeRoom": "SUITE",
+    "PriceNight": 160,
+    "ImageUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/483875338.jpg?k=273ab723c9aec39d6ea49fcfe5265b0e21d11998ddcf3328cccbb9b508aee341&o=&hp=1",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "0d49ace4-1b8b-462e-a345-f3033881b7cd",
+    "NumberRoom": 207,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 95,
+    "ImageUrl": "https://media-cdn.tripadvisor.com/media/photo-s/11/80/fc/3e/copantl-hotel-convention.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "bfb79a93-0ed4-4545-8ade-9b4bb59ebdec",
+    "NumberRoom": 208,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 80,
+    "ImageUrl": "https://www.stanzahotel.com/wp-content/uploads/2023/10/habitacion_Sencilla_8.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "a8e8e4a7-0179-4e6e-a4b3-730f80a6f5eb",
+    "NumberRoom": 209,
+    "TypeRoom": "SUITE",
+    "PriceNight": 170,
+    "ImageUrl": "https://www.florenciaplazahotel.com/wp-content/uploads/2019/11/FPH-Habitacion-doble.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "127ba812-e9ca-4525-ab28-928d738171aa",
+    "NumberRoom": 210,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 100,
+    "ImageUrl": "https://alcomobi.com/wp-content/uploads/2023/01/mobiliario-contract-hoteles-habitaciones-alcomobi-33.jpg",
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "cea6d382-a8de-41dd-820f-d9601fdf24d6",
+    "NumberRoom": 301,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 60,
+    "ImageUrl": "https://www.xotels.com/wp-content/uploads/2020/03/hotel-room-type-xotels-hotel-management-company-800x599.webp",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "6bc63a0d-5de4-4cc1-aa88-e61e8bf297e5",
+    "NumberRoom": 302,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 80,
+    "ImageUrl": "https://cdn.forbes.com.mx/2021/12/hoteles-de-lujo-tres-e1639513889195.jpg",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "9f6a34c3-ab33-400a-a87e-4565838a04e0",
+    "NumberRoom": 303,
+    "TypeRoom": "SUITE",
+    "PriceNight": 110,
+    "ImageUrl": "https://www.florenciaplazahotel.com/wp-content/uploads/2019/11/FPH-Habitacion-sencilla.jpg",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "dc5acffb-3f54-4fb1-8948-44c27dad1206",
+    "NumberRoom": 304,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 65,
+    "ImageUrl": "https://www.sambahotels.com/media/items/big/img_0832.jpg",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "0ca34cf4-61a9-4e50-8bff-9681d29d86d0",
+    "NumberRoom": 305,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 85,
+    "ImageUrl": "https://www.hotelreginamadrid.com/wp-content/uploads/2022/02/00-habitacion-atico-hotel-regina.jpg",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "fb192e0d-aab2-43a0-a6b5-522f35b3f84b",
+    "NumberRoom": 306,
+    "TypeRoom": "SUITE",
+    "PriceNight": 125,
+    "ImageUrl": "https://copantl.com/wp-content/uploads/2021/09/Estandar-Doble-mini.jpg",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "edf2b67b-13d8-4b50-a511-69b37b821aee",
+    "NumberRoom": 307,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 70,
+    "ImageUrl": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/9d/77/49/guest-room-with-queen.jpg?w=700&h=-1&s=1",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "1573b876-44b5-43c7-8345-f89e1ed2cca0",
+    "NumberRoom": 308,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 90,
+    "ImageUrl": "https://images.trvl-media.com/lodging/37000000/36810000/36804500/36804417/1ce6f37f.jpg?impolicy=fcrop&w=1200&h=800&p=1&q=medium",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "b0284234-b15c-4868-87e7-4463bd9a2f2b",
+    "NumberRoom": 309,
+    "TypeRoom": "SUITE",
+    "PriceNight": 135,
+    "ImageUrl": "https://copantl.com/wp-content/uploads/2021/09/Estandar-mini.jpg",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "6fbe8db3-1524-4dd0-b958-c7622e7cb2ce",
+    "NumberRoom": 310,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 75,
+    "ImageUrl": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/76/26/f2/king-suite.jpg?w=700&h=-1&s=1",
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "7a31d7f6-b448-46f9-987a-a8a551a83b54",
+    "NumberRoom": 401,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 95,
+    "ImageUrl": "https://cache.marriott.com/is/image/marriotts7prod/si-limsi-double-double-guest-room--48775:Wide-Hor?wid=1336&fit=constrain",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "701573a5-d6bf-457f-88cf-13f0e37f590a",
+    "NumberRoom": 402,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 65,
+    "ImageUrl": "https://www.hotelpuertadetoledo.com/wp-content/blogs.dir/1247/files/habitaciones//02.Doble-1000.jpg",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "f00663f8-a30c-4480-896a-a261c5eafd59",
+    "NumberRoom": 403,
+    "TypeRoom": "SUITE",
+    "PriceNight": 130,
+    "ImageUrl": "https://www.hola.com/horizon/original_aspect_ratio/f43d5e2f613c-habitaciones-hotel-8a-a.jpg",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "6f9e7a17-e382-4977-9a6b-02ee777c3485",
+    "NumberRoom": 404,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 100,
+    "ImageUrl": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/96/a9/8b/lq-hotel-tegucigalpa.jpg?w=700&h=-1&s=1",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "97563595-5056-4f0b-92d5-bfb907e74a45",
+    "NumberRoom": 405,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 70,
+    "ImageUrl": "https://juegomaniaa.neocities.org/pension_carmen/imagenes/habitacion1.jpg",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "44a7f747-b23d-4750-94a9-2046c2921236",
+    "NumberRoom": 406,
+    "TypeRoom": "SUITE",
+    "PriceNight": 140,
+    "ImageUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/274814872.jpg?k=9ab6825b3ee25d1d96466b036421788863fd3008de400465a21c3379b0a2cfae&o=&hp=1",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "fa67b0f2-128e-452b-9a73-198889f1a08b",
+    "NumberRoom": 407,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 105,
+    "ImageUrl": "https://images.mirai.com/INFOROOMS/100128930/ChksNqBNNTizadpfLOdz/ChksNqBNNTizadpfLOdz_large.jpg",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "795d0734-9b29-4455-90ae-d278695c1c38",
+    "NumberRoom": 408,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 75,
+    "ImageUrl": "https://images.mirai.com/INFOROOMS/100121951/39rbIWlTZaauLh81PHWd/39rbIWlTZaauLh81PHWd_large.jpg",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "df31dd15-b191-4a7e-b0d2-69c4adefdc16",
+    "NumberRoom": 409,
+    "TypeRoom": "SUITE",
+    "PriceNight": 150,
+    "ImageUrl": "https://content.arquitecturaydiseno.es/medio/2024/01/09/dsc-6279_00000000_5a699724_240109125620_1280x794.jpg",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "7c001e05-4c59-42f0-9ed3-4118dbbf624e",
+    "NumberRoom": 410,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 110,
+    "ImageUrl": "https://puntadiamantehotel.com/wp-content/uploads/2018/06/Habitacion_premium_king_75.jpg",
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "b45beb9a-49e6-4d05-b263-edf5a87af629",
+    "NumberRoom": 501,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 80,
+    "ImageUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/362706846.jpg?k=067fe4e998bcd70b84347b94bf8d98d93b1dd7bfd48c9f6d472e05d329a1c1be&o=&hp=1",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "7cafe2b7-4fec-4f13-b830-d21b12bec780",
+    "NumberRoom": 502,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 85,
+    "ImageUrl": "https://www.intercontisantiago.com/wp-content/uploads/2016/01/94A0476-1024x680.jpg",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "128182a7-a5f4-4bff-b779-bb62ccdbe8d9",
+    "NumberRoom": 503,
+    "TypeRoom": "SUITE",
+    "PriceNight": 160,
+    "ImageUrl": "https://i.pinimg.com/736x/9f/72/e7/9f72e70220722776dd8def0cbfcbb7f1.jpg",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "3bad9b13-e6b3-4576-aa16-2de5ae02adc4",
+    "NumberRoom": 504,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 85,
+    "ImageUrl": "https://hotelesposeidon.com/storage/1426/088.jpg",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "b5a05c26-87d4-4aed-9a95-05ac68d8fdd6",
+    "NumberRoom": 505,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 90,
+    "ImageUrl": "https://images.trvl-media.com/lodging/37000000/36810000/36804500/36804417/62a34647.jpg?impolicy=fcrop&w=1200&h=800&p=1&q=medium",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "2d30f78c-ea8f-479d-9a3f-4b08fff386c2",
+    "NumberRoom": 506,
+    "TypeRoom": "SUITE",
+    "PriceNight": 170,
+    "ImageUrl": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/08/8f/05/38/honduras-maya-hotel.jpg?w=700&h=-1&s=1",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "2e9b2109-c98c-4a5f-b9d9-a509061243e1",
+    "NumberRoom": 507,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 90,
+    "ImageUrl": "https://www.hola.com/horizon/original_aspect_ratio/de064cd3cca2-habitaciones-hotel-5a-a.jpg",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "102f8764-e53c-4ec8-8fda-d009ede4e8c1",
+    "NumberRoom": 508,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 95,
+    "ImageUrl": "https://assets.hyatt.com/content/dam/hyatt/hyattdam/images/2018/12/28/0951/Hyatt-Place-Tegucigalpa-P097-Suite-Bedroom.jpg/Hyatt-Place-Tegucigalpa-P097-Suite-Bedroom.16x9.jpg?imwidth=1280",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "46338e87-1360-4d87-8d35-5bf5971772df",
+    "NumberRoom": 509,
+    "TypeRoom": "SUITE",
+    "PriceNight": 180,
+    "ImageUrl": "https://www.costadelsolperu.com/wp-content/uploads/2019/08/Hotel-Costa-del-Sol-cusco-estandar-doble-1.jpg",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "2b48f20b-ffe4-4a8a-9468-61f92ccd4ed0",
+    "NumberRoom": 510,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 95,
+    "ImageUrl": "https://www.hola.com/horizon/original_aspect_ratio/a628b238aa65-habitaciones-hotel-18a-a.jpg",
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "cf5e4fe5-d8a4-488e-b514-b8afc70a267f",
+    "NumberRoom": 601,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 100,
+    "ImageUrl": "https://www.quintarealhotel.com/system/images/quinta_real_habitaciones_index.jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "0da25333-3608-4a97-8daa-b69fdcbedcd8",
+    "NumberRoom": 602,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 80,
+    "ImageUrl": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/08/8f/05/48/honduras-maya-hotel.jpg?w=700&h=-1&s=1",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "a201debe-3fbe-43f5-bd9e-46f58c82b796",
+    "NumberRoom": 603,
+    "TypeRoom": "SUITE",
+    "PriceNight": 165,
+    "ImageUrl": "https://hondurasmaya.hn/wp-content/uploads/2023/05/suite-presidencial-4.jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "135273bc-6397-46cd-84d2-1656ce40a4a2",
+    "NumberRoom": 604,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 105,
+    "ImageUrl": "https://elrincondesantiago.com/wp-content/uploads/2020/12/banner-habitaciones-mobile2.jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "b01136e9-ad52-4e44-95f1-5e00595296e4",
+    "NumberRoom": 605,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 85,
+    "ImageUrl": "https://www.portaventuraworld.com/static/e36ec799fcdb5876fd8b375f5c415c10/2f1b1/Junior-Suite-(7).jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "17dead6c-5f3e-4e76-bfdd-a79083c9e031",
+    "NumberRoom": 606,
+    "TypeRoom": "SUITE",
+    "PriceNight": 175,
+    "ImageUrl": "https://images.mirai.com/INFOROOMS/97192124/G1Pgf1HwH1WguHDRIAu9/G1Pgf1HwH1WguHDRIAu9_large.jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "35753f35-c474-4e53-bd18-dcfcc3ffb7e1",
+    "NumberRoom": 607,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 110,
+    "ImageUrl": "https://www.gaviotahotels.com/.imaging/mte/adgtravel-theme/2100/dam/ADG-GaviotaHotels/sliders/hoteles/hotel-playa-pesquero-ai/habitaciones/gaviota-slide-hoteles-hotel-playa-pesquero-ai-habitaciones.jpg/jcr:content/gaviota-slide-hoteles-hotel-playa-pesquero-habitaciones-standard.jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "ad9d5b7a-f322-4ab9-ac2c-90857b8c735d",
+    "NumberRoom": 608,
+    "TypeRoom": "SENCILLA",
+    "PriceNight": 90,
+    "ImageUrl": "https://i0.wp.com/presidenteicmexico.com/wp-content/uploads/2024/04/hoteles-cdmx-polanco-habitacion-handicap-esp.jpg?fit=1075%2C694&ssl=1",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "8ac50122-527e-48db-b388-8855aec215e6",
+    "NumberRoom": 609,
+    "TypeRoom": "SUITE",
+    "PriceNight": 185,
+    "ImageUrl": "https://images.mirai.com/INFOROOMS/100123637/vT4x8DYcipEA74oskOIh/vT4x8DYcipEA74oskOIh_large.jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "124b0086-0bfe-42df-bfa5-2fd3a4289fcb",
+    "NumberRoom": 610,
+    "TypeRoom": "DOBLE",
+    "PriceNight": 115,
+    "ImageUrl": "https://www.dosplayas.com/cache/2a/db/2adbf076bdc79cf98b6ae732bfc1364f.jpg",
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  }
+]

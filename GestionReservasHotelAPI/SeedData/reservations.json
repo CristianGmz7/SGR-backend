@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "ac3024ec-e5b5-43ed-94d3-44937359b21a",
+    "StartDate": "2024-07-13T10:00:00",
+    "FinishDate": "2024-07-14T10:00:00",
+    "Condition": "COMPLETADA",
+    "Price": "1500",
+    "ClientId": "99de41de-53b6-42a0-be56-b56c34acada3"
+  },
+  {
+    "Id": "3bd24ee7-5e0c-4ba7-9e6a-b101934597e1",
+    "StartDate": "2024-07-09T12:00:00",
+    "FinishDate": "2024-07-10T12:00:00",
+    "Condition": "CANCELADA",
+    "Price": "3000",
+    "ClientId": "ddfb5f35-4069-45c4-868d-2bcd9ec2c832"
+  },
+  {
+    "Id": "a511cd44-cecd-48b1-b33c-67381f5f1951",
+    "StartDate": "2024-08-15T08:00:00",
+    "FinishDate": "2024-08-16T08:00:00",
+    "Condition": "CONFIRMADA",
+    "Price": "3500",
+    "ClientId": "4084c6d3-2b31-450c-9ce1-233101f9bb7d"
+  },
+  {
+    "Id": "d7242c30-14cb-46a6-85ae-1b4b2e7fd76a",
+    "StartDate": "2024-07-19T14:00:00",
+    "FinishDate": "2024-07-20T14:00:00",
+    "Condition": "COMPLETADA",
+    "Price": "2110",
+    "ClientId": "81d1e17f-77b7-4b38-995e-e62c1c0332b0"
+  },
+  {
+    "Id": "e5fa3b34-8d8e-4a3f-a2f8-80f7df4b8302",
+    "StartDate": "2024-07-25T09:00:00",
+    "FinishDate": "2024-07-26T09:00:00",
+    "Condition": "CANCELADA",
+    "Price": "800",
+    "ClientId": "bc1a17cd-9b61-40ea-9057-2ad8a7a1c377"
+  },
+  {
+    "Id": "f6c4d926-3cf8-4d1a-8c5a-ec9fcb8b1e3b",
+    "StartDate": "2024-08-01T11:00:00",
+    "FinishDate": "2024-08-02T11:00:00",
+    "Condition": "CONFIRMADA",
+    "Price": "1350",
+    "ClientId": "fa6f49c4-9a38-4c2a-bb0b-8bb3f5a9e9e1"
+  },
+  {
+    "Id": "7a31a3ed-7e7b-4392-8ae1-0038ab8b8e7c",
+    "StartDate": "2024-06-05T15:00:00",
+    "FinishDate": "2024-06-06T15:00:00",
+    "Condition": "COMPLETADA",
+    "Price": "850",
+    "ClientId": "5eafe8fc-8d3d-4d49-9178-7f321f1b53f1"
+  },
+  {
+    "Id": "ed1edeb9-0335-49a3-850c-7b3493c52956",
+    "StartDate": "2024-08-10T16:00:00",
+    "FinishDate": "2024-08-11T16:00:00",
+    "Condition": "CANCELADA",
+    "Price": "1250",
+    "ClientId": "987d67e3-4ff4-45f0-9c3b-7e98a4b66784"
+  },
+  {
+    "Id": "5c4a4f3f-02fc-4f4b-a8c1-08c6f9c4e507",
+    "StartDate": "2024-08-20T10:00:00",
+    "FinishDate": "2024-08-21T10:00:00",
+    "Condition": "CONFIRMADA",
+    "Price": "2830",
+    "ClientId": "0fa7d0e6-0fbf-4a29-92f7-13a4b7d3e5d8"
+  }
+]

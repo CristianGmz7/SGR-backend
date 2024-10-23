@@ -1,0 +1,182 @@
+[
+  {
+    "Id": "1b49ea11-eed7-4101-b200-878cf7d94f7a",
+    "Name": "Acceso a spa",
+    "Price": 50,
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "72c18b12-98e7-419a-9f34-4d8914edacba",
+    "Name": "Desayuno Buffet",
+    "Price": 25,
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "0bb53be5-3b28-447f-af0c-64f1ae430bd7",
+    "Name": "Acceso a Gym",
+    "Price": 20,
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "1233aa0b-2556-467b-877d-8989fe734553",
+    "Name": "Salida Tardía",
+    "Price": 30,
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "f1637841-5c47-4f48-abc4-55a0bf7fe064",
+    "Name": "Servicio a la habitación",
+    "Price": 40,
+    "HotelId": "8fbdb807-1d0b-4425-8b08-3ba3ec68c743"
+  },
+  {
+    "Id": "70f8f70f-c055-46e8-881b-a04b129a6e4e",
+    "Name": "Traslado al aeropuerto",
+    "Price": 60,
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "8f19972a-83f1-4792-90ac-71b1d1a83ccc",
+    "Name": "Desayuno Buffet",
+    "Price": 28,
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "641a98e5-9296-433b-af34-9a249911349f",
+    "Name": "Acceso a Spa",
+    "Price": 55,
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "ace25f1e-fb90-4c63-a0e4-a6fd1236c6fc",
+    "Name": "Servicio de Aparcacoches",
+    "Price": 15,
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "5799b8a0-bc88-437e-a6ed-4a98f8417f91",
+    "Name": "Servicio de Lavanderia",
+    "Price": 20,
+    "HotelId": "9537ea02-93bf-4338-bf25-5b565d247a9f"
+  },
+  {
+    "Id": "9421a594-58b2-4118-8527-506d60a51ee6",
+    "Name": "Breakfast Buffet",
+    "Price": 30,
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "8f4ed5eb-ad36-4673-8c27-827d2b99039d",
+    "Name": "Acceso al Gym",
+    "Price": 25,
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "6d837cd3-c808-4161-b1ae-aad28035e023",
+    "Name": "Servicio a la habitación",
+    "Price": 45,
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "44cdef6d-c9b4-4534-84f3-d3ca840dd7db",
+    "Name": "Salida tardía",
+    "Price": 35,
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "5c55e2c4-11d0-415c-b674-301affef9140",
+    "Name": "Traslado al aeropuerto",
+    "Price": 65,
+    "HotelId": "a1c24a67-8d41-4b59-bb0e-1d9d8d6b9a92"
+  },
+  {
+    "Id": "0886f99c-ba58-44d6-a55a-3c6d7055fbbc",
+    "Name": "Servicio de aparcacoches",
+    "Price": 18,
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "e5db6723-50f9-430b-bed1-9687b472546d",
+    "Name": "Acceso a Spa",
+    "Price": 60,
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "7a4d1f24-36f2-4409-8a59-875dab4a22c6",
+    "Name": "Acceso al Gym",
+    "Price": 22,
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "f1f07249-8290-49f3-8ae5-b72d7fad99b3",
+    "Name": "Servicio de Lavandería",
+    "Price": 25,
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "c24e10cb-85e1-4f5b-81c6-56c8e63c6ab0",
+    "Name": "Servicio a la habitación",
+    "Price": 50,
+    "HotelId": "b2d89c8d-5e32-4cd7-84f2-04b4edbfc7e9"
+  },
+  {
+    "Id": "5011574a-a18d-4dfa-be61-909c4856e432",
+    "Name": "Desayuno Buffet",
+    "Price": 27,
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "1f340a8b-bc1d-429a-8f52-fe52cf3844bc",
+    "Name": "Traslado al aeropuerto",
+    "Price": 70,
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "8051a48a-a000-474d-87e6-46950d7176c5",
+    "Name": "Acceso al Spa",
+    "Price": 65,
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "2419dec0-fb84-48ad-a9f3-4a07a3bbce00",
+    "Name": "Acceso al Gym",
+    "Price": 28,
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "d1906795-0278-4af3-bc02-f154723bbbbc",
+    "Name": "Servicio de aparcacoches",
+    "Price": 20,
+    "HotelId": "7f6e4b9d-84f3-4f93-b5b7-045ef48b3216"
+  },
+  {
+    "Id": "92ea211f-8e11-481f-8f61-323694771e6c",
+    "Name": "Servicio de Lavanderia",
+    "Price": 22,
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "d37def80-8a12-421f-9bc0-fc43f3bcd574",
+    "Name": "Desayuno Buffet",
+    "Price": 35,
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "2ba99153-6b0b-42a0-bc82-82c01298bff4",
+    "Name": "Servicio a la habitación",
+    "Price": 55,
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "274679dc-b189-453a-87e0-6527c2dd1119",
+    "Name": "Salida tardía",
+    "Price": 40,
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  },
+  {
+    "Id": "b6c53870-c8a5-4d43-99c0-af0c05069e4c",
+    "Name": "Acceso al Spa",
+    "Price": 70,
+    "HotelId": "3a1f967c-9d74-4b23-920a-1d5d0df5b1a4"
+  }
+]

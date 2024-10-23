@@ -1,0 +1,47 @@
+[
+  {
+    "Id": "9cac8030-7f99-4807-b874-8619ea878907",
+    "ReservationId": "a511cd44-cecd-48b1-b33c-67381f5f1951",
+    "RoomId": "e802e0b6-fae1-4824-b8e2-9351252f489c"
+  },
+  {
+    "Id": "3e25405f-55aa-479d-ad53-48bb8725fcf3",
+    "ReservationId": "f6c4d926-3cf8-4d1a-8c5a-ec9fcb8b1e3b",
+    "RoomId": "a2c2e0b8-5a73-4a0b-8f56-9294534d6ec8"
+  },
+  {
+    "Id": "255a0b93-74d0-469e-a867-551e84147c63",
+    "ReservationId": "5c4a4f3f-02fc-4f4b-a8c1-08c6f9c4e507",
+    "RoomId": "b3d4e1c1-68f1-4fbb-9e8d-1c5c2b8a2ec9"
+  },
+  {
+    "Id": "aefd036b-0f05-4b0d-84b2-ab8af410ac5d",
+    "ReservationId": "3bd24ee7-5e0c-4ba7-9e6a-b101934597e1",
+    "RoomId": "d5f6e3f3-83a4-4bcd-9fde-38d4f3c6d7f5"
+  },
+  {
+    "Id": "b6dcb41e-72a3-4e44-9fd9-b45c9ae08874",
+    "ReservationId": "ed1edeb9-0335-49a3-850c-7b3493c52956",
+    "RoomId": "e6f7e4e4-94b5-4cde-afce-49d5f4d7e8f6"
+  },
+  {
+    "Id": "1ce193a9-6cb1-4dc6-9a40-c76af6d861dc",
+    "ReservationId": "d7242c30-14cb-46a6-85ae-1b4b2e7fd76a",
+    "RoomId": "606b8d44-3722-4511-8629-3dc43feef3b1"
+  },
+  {
+    "Id": "5307dbc6-378b-4695-940d-99d394af5570",
+    "ReservationId": "7a31a3ed-7e7b-4392-8ae1-0038ab8b8e7c",
+    "RoomId": "f8c8e5f5-9c7d-4def-bfde-58e6f5e8f9c7"
+  },
+  {
+    "Id": "b9580af6-fe8b-4b0e-b15b-cb851a57d03e",
+    "ReservationId": "ac3024ec-e5b5-43ed-94d3-44937359b21a",
+    "RoomId": "0753d88a-398f-427e-889f-a8f7a8b24c01"
+  },
+  {
+    "Id": "10b536bd-7a3c-4712-b9dd-3000827a0df1",
+    "ReservationId": "e5fa3b34-8d8e-4a3f-a2f8-80f7df4b8302",
+    "RoomId": "c4e5d2e2-7a2b-47ac-8fbe-29c3e2b6c5d4"
+  }
+]

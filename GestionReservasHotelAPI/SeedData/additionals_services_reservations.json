@@ -1,0 +1,47 @@
+[
+  {
+    "Id": "eae60a4c-125f-42a4-b348-80ab815e6b4c",
+    "ReservationId": "a511cd44-cecd-48b1-b33c-67381f5f1951",
+    "AdditionalServiceId": "8b6ea8ad-92a7-4e91-91a7-79993fb2c29f"
+  },
+  {
+    "Id": "dd9d5ab0-635a-4605-ae19-0119852c7eeb",
+    "ReservationId": "a511cd44-cecd-48b1-b33c-67381f5f1951",
+    "AdditionalServiceId": "5c8d35a8-f2d1-4b0f-8e1d-1e0b7376d5c7"
+  },
+  {
+    "Id": "c2f8b494-ceaa-4174-8739-b4e154616fb2",
+    "ReservationId": "f6c4d926-3cf8-4d1a-8c5a-ec9fcb8b1e3b",
+    "AdditionalServiceId": "290258bb-f5e4-4a9b-ba8e-082465a43b69"
+  },
+  {
+    "Id": "57a66e44-6058-49e6-ba6b-124bf1c78431",
+    "ReservationId": "5c4a4f3f-02fc-4f4b-a8c1-08c6f9c4e507",
+    "AdditionalServiceId": "b915f5d1-305e-45b3-a571-bbd1f90c7a7d"
+  },
+  {
+    "Id": "d39d1943-a1c4-4641-a89f-0d830752e3b5",
+    "ReservationId": "5c4a4f3f-02fc-4f4b-a8c1-08c6f9c4e507",
+    "AdditionalServiceId": "39d7f99e-123b-4f89-99f7-1cbfe7806c4a"
+  },
+  {
+    "Id": "31a56280-550f-43b8-9a2c-a606f4b917d1",
+    "ReservationId": "d7242c30-14cb-46a6-85ae-1b4b2e7fd76a",
+    "AdditionalServiceId": "2f5c7a4a-1b6e-4d5e-97b3-072a0c61e8e5"
+  },
+  {
+    "Id": "0fd53717-f8c8-423e-b656-c82fe3587990",
+    "ReservationId": "7a31a3ed-7e7b-4392-8ae1-0038ab8b8e7c",
+    "AdditionalServiceId": "db08b1c2-6d28-4a39-9fb2-924bc9c7b195"
+  },
+  {
+    "Id": "c88f4901-2034-487a-a229-119be320131e",
+    "ReservationId": "ed1edeb9-0335-49a3-850c-7b3493c52956",
+    "AdditionalServiceId": "290258bb-f5e4-4a9b-ba8e-082465a43b69"
+  },
+  {
+    "Id": "d01c6890-7a74-4432-a4c7-386f309eb8e5",
+    "ReservationId": "3bd24ee7-5e0c-4ba7-9e6a-b101934597e1",
+    "AdditionalServiceId": "b915f5d1-305e-45b3-a571-bbd1f90c7a7d"
+  }
+]
