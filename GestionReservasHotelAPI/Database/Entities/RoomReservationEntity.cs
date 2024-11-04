@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestionReservasHotelAPI.Database.Entities;
 
@@ -18,4 +19,9 @@ public class RoomReservationEntity : BaseEntity
 
     [ForeignKey(nameof(ReservationId))]
     public virtual ReservationEntity Reservation { get; set; }
+
+    //nuevos campos historicos agregados
+    [Range(1, double.MaxValue)]
+    [Column("price_night")]
+    public double PriceNight { get; set; }
 }

@@ -78,7 +78,7 @@ public class ReservationsService : IReservationsService
                 Id = rR.Room.Id,
                 NumberRoom = rR.Room.NumberRoom,
                 TypeRoom = rR.Room.TypeRoom,
-                PriceNight = rR.Room.PriceNight,
+                PriceNight = rR.PriceNight,     //accediendo al precio historico que se tiene
                 ImageUrl = rR.Room.ImageUrl,
                 HotelInfo = new HotelDto
                 {
@@ -90,7 +90,7 @@ public class ReservationsService : IReservationsService
             {
                 Id = aS.AdditionalService.Id,
                 Name = aS.AdditionalService.Name,
-                Price = aS.AdditionalService.Price,
+                Price = aS.Price,           //accediendo al precio historico
             }).ToList()
         }
         ).ToList();
@@ -181,7 +181,7 @@ public class ReservationsService : IReservationsService
                 Id = rR.Room.Id,
                 NumberRoom = rR.Room.NumberRoom,
                 TypeRoom = rR.Room.TypeRoom,
-                PriceNight = rR.Room.PriceNight,
+                PriceNight = rR.PriceNight,     //accediendo al precio historico que se tiene
                 ImageUrl = rR.Room.ImageUrl,
                 HotelInfo = new HotelDto
                 {
@@ -193,7 +193,7 @@ public class ReservationsService : IReservationsService
             {
                 Id = aS.AdditionalService.Id,
                 Name = aS.AdditionalService.Name,
-                Price = aS.AdditionalService.Price,
+                Price = aS.Price,           //accediendo al precio historico
             }).ToList()
 
         }
@@ -253,7 +253,7 @@ public class ReservationsService : IReservationsService
                 Id = rR.Room.Id,
                 NumberRoom = rR.Room.NumberRoom,
                 TypeRoom = rR.Room.TypeRoom,
-                PriceNight = rR.Room.PriceNight,
+                PriceNight = rR.PriceNight,     //accediendo al precio historico que se tiene
                 ImageUrl = rR.Room.ImageUrl,
                 HotelInfo = new HotelDto
                 {
@@ -265,7 +265,7 @@ public class ReservationsService : IReservationsService
             {
                 Id = aS.AdditionalService.Id,
                 Name = aS.AdditionalService.Name,
-                Price = aS.AdditionalService.Price,
+                Price = aS.Price,           //accediendo al precio historico
             }).ToList()
         };
 
@@ -435,7 +435,9 @@ public class ReservationsService : IReservationsService
                 var roomsReservationsEntity = roomIds.Select(room => new RoomReservationEntity
                 {
                     ReservationId = reservationEntity.Id,
-                    RoomId = room
+                    RoomId = room,
+                    // agregar el campo de PriceNight tomando el precio de la habitacion que corresponde el id de RoomId
+                    PriceNight = roomsEntity.First(r => r.Id == room).PriceNight,
                 }); 
 
                 _context.RoomReservations.AddRange(roomsReservationsEntity);
@@ -448,7 +450,9 @@ public class ReservationsService : IReservationsService
                     var additionalServiceReservations = additionalServicesIds.Select(aS => new AdditionalServiceReservationEntity
                     {
                         ReservationId = reservationEntity.Id,
-                        AdditionalServiceId = aS
+                        AdditionalServiceId = aS,
+                        // agregar el campo de Price tomando el precio del servicio adicional que corresponde el id de AdditionalServiceId
+                        Price = additionalServicesEntity.First(addSer => addSer.Id == aS).Price,
                     });
 
                     _context.AdditionalServiceReservations.AddRange(additionalServiceReservations);
@@ -496,7 +500,7 @@ public class ReservationsService : IReservationsService
                         Id = rR.Room.Id,
                         NumberRoom = rR.Room.NumberRoom,
                         TypeRoom = rR.Room.TypeRoom,
-                        PriceNight = rR.Room.PriceNight,
+                        PriceNight = rR.PriceNight,     //accediendo al precio historico que se tiene
                         ImageUrl = rR.Room.ImageUrl,
                         HotelInfo = new HotelDto
                         {
@@ -508,7 +512,7 @@ public class ReservationsService : IReservationsService
                     {
                         Id = aS.AdditionalService.Id,
                         Name = aS.AdditionalService.Name,
-                        Price = aS.AdditionalService.Price,
+                        Price = aS.Price,           //accediendo al precio historico
                     }).ToList()
                 };
 
@@ -776,7 +780,10 @@ public class ReservationsService : IReservationsService
                     .Select(room => new RoomReservationEntity
                     {
                         ReservationId = reservationEntity.Id,
-                        RoomId = room
+                        RoomId = room,
+                        // agregar el campo de PriceNight tomando el precio de la habitacion que corresponde el id de RoomId
+                        PriceNight = roomsEntity.First(r => r.Id == room).PriceNight,
+
                     })
                     .ToList();
 
@@ -792,7 +799,9 @@ public class ReservationsService : IReservationsService
                     .Select(aS => new AdditionalServiceReservationEntity
                     {
                         ReservationId = reservationEntity.Id,
-                        AdditionalServiceId = aS
+                        AdditionalServiceId = aS,
+                        // agregar el campo de Price tomando el precio del servicio adicional que corresponde el id de AdditionalServiceId
+                        Price = additionalServicesEntity.First(addSer => addSer.Id == aS).Price,
                     })
                     .ToList();
 
@@ -818,7 +827,7 @@ public class ReservationsService : IReservationsService
                         Id = rR.Room.Id,
                         NumberRoom = rR.Room.NumberRoom,
                         TypeRoom = rR.Room.TypeRoom,
-                        PriceNight = rR.Room.PriceNight,
+                        PriceNight = rR.PriceNight,     //accediendo al precio historico que se tiene
                         ImageUrl = rR.Room.ImageUrl,
                         HotelInfo = new HotelDto
                         {
@@ -830,7 +839,7 @@ public class ReservationsService : IReservationsService
                     {
                         Id = aS.AdditionalService.Id,
                         Name = aS.AdditionalService.Name,
-                        Price = aS.AdditionalService.Price,
+                        Price = aS.Price,           //accediendo al precio historico
                     }).ToList()
                 };
 
