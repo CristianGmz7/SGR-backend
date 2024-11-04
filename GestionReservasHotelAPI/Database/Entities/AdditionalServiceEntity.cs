@@ -21,4 +21,9 @@ public class AdditionalServiceEntity : BaseEntity
     public virtual HotelEntity Hotel { get; set; }
 
     public virtual IEnumerable<AdditionalServiceReservationEntity> Reservations { get; set; }
+
+    //llaves foraneas auditoria
+    public virtual UserEntity CreatedByUser { get; set; }
+
+    public virtual UserEntity UpdatedByUser { get; set; }
 }

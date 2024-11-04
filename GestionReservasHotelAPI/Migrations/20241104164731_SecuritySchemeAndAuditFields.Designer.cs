@@ -4,6 +4,7 @@ using GestionReservasHotelAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionReservasHotelAPI.Migrations
 {
     [DbContext(typeof(GestionReservasHotelContext))]
-    partial class GestionReservasHotelContextModelSnapshot : ModelSnapshot
+    [Migration("20241104164731_SecuritySchemeAndAuditFields")]
+    partial class SecuritySchemeAndAuditFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

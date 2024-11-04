@@ -17,20 +17,23 @@ public class ReservationsService : IReservationsService
     private readonly GestionReservasHotelContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<ReservationsService> _logger;
-    private readonly IAuthService _authService;
+    private readonly IAuditService _auditService;
+    //private readonly IAuthService _authService;
     private readonly int PAGE_SIZE;
 
     public ReservationsService(GestionReservasHotelContext context, 
         IMapper mapper, 
         ILogger<ReservationsService> logger,
-        IAuthService authService,
+        //IAuthService authService,
+        IAuditService auditService,
         IConfiguration configuration
         )
     {
         this._context = context;
         this._mapper = mapper;
         this._logger = logger;
-        this._authService = authService;
+        this._auditService = auditService;
+        //this._authService = authService;
         PAGE_SIZE = configuration.GetValue<int>("Pagination:ReservationPageSize");
 
     }
@@ -42,7 +45,7 @@ public class ReservationsService : IReservationsService
         string clientId = "", int page = 1)
     {
 
-        clientId = _authService.GetUserId();        //esta de manera temporal mientras se agregan usuarios
+        clientId = _auditService.GetUserId();        // filtrar las reservaciones del que este autenticado
                                             //debe hacerse verificacion que el usuario exista
         int startIndex = (page - 1) * PAGE_SIZE;
         var reservationEntityQuery = _context.Reservations
@@ -139,7 +142,7 @@ public class ReservationsService : IReservationsService
             };
         }
 
-        clientId = _authService.GetUserId();
+        clientId = _auditService.GetUserId();
 
         int startIndex = (page - 1) * PAGE_SIZE;
 
@@ -422,7 +425,7 @@ public class ReservationsService : IReservationsService
                     //Los List IEnumerable no se colocan
                 };
 
-                reservationEntity.ClientId = _authService.GetUserId();
+                reservationEntity.ClientId = _auditService.GetUserId();
 
                 // Agregar la reserva al contexto y guardar los cambios
                 _context.Reservations.Add(reservationEntity);
@@ -766,7 +769,10 @@ public class ReservationsService : IReservationsService
                 reservationEntity.StartDate = dto.StartDate;
                 reservationEntity.FinishDate = dto.FinishDate;
                 reservationEntity.Price = totalAmount;  
-                reservationEntity.ClientId = _authService.GetUserId();
+
+                //la reserva siempre pertenece al que la creo
+                //reservationEntity.ClientId = _auditService.GetUserId();
+                reservationEntity.ClientId = reservationEntity.ClientId;
 
                 _context.Reservations.Update(reservationEntity);
                 await _context.SaveChangesAsync();

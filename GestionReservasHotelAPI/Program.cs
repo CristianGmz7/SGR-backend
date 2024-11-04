@@ -1,5 +1,7 @@
 using GestionReservasHotelAPI;
 using GestionReservasHotelAPI.Database;
+using GestionReservasHotelAPI.Database.Entities;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,11 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var Context = services.GetRequiredService<GestionReservasHotelContext>();
-        await GestionReservasHotelSeeder.LoadDataAsync(Context, loggerFactory);
+
+        var userManager = services.GetRequiredService<UserManager<UserEntity>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        await GestionReservasHotelSeeder.LoadDataAsync(Context, loggerFactory, userManager, roleManager);
     }
     catch (Exception e)
     {
