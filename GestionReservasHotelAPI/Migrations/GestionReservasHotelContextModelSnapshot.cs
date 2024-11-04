@@ -60,6 +60,10 @@ namespace GestionReservasHotelAPI.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("additional_service_id");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float")
+                        .HasColumnName("price");
+
                     b.Property<Guid>("ReservationId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("reservation_id");
@@ -185,6 +189,10 @@ namespace GestionReservasHotelAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
+
+                    b.Property<double>("PriceNight")
+                        .HasColumnType("float")
+                        .HasColumnName("price_night");
 
                     b.Property<Guid>("ReservationId")
                         .HasColumnType("uniqueidentifier")

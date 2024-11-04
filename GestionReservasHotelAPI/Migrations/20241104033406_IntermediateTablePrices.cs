@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GestionReservasHotelAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class IntermediateTablePrices : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,9 +21,12 @@ namespace GestionReservasHotelAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     stars_michelin = table.Column<int>(type: "int", nullable: false),
-                    number_phone = table.Column<int>(type: "int", nullable: false)
+                    number_phone = table.Column<int>(type: "int", nullable: false),
+                    overview = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    image_url = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,7 +41,6 @@ namespace GestionReservasHotelAPI.Migrations
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     finish_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    condition = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     price = table.Column<double>(type: "float", nullable: false),
                     client_id = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -78,8 +80,8 @@ namespace GestionReservasHotelAPI.Migrations
                     number_room = table.Column<int>(type: "int", nullable: false),
                     type_room = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     price_night = table.Column<double>(type: "float", nullable: false),
-                    condition = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    hotel_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    hotel_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    image_url = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,7 +102,8 @@ namespace GestionReservasHotelAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     additional_service_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    reservation_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    reservation_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    price = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,7 +131,8 @@ namespace GestionReservasHotelAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     room_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    reservation_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    reservation_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    price_night = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionReservasHotelAPI.Migrations
 {
     [DbContext(typeof(GestionReservasHotelContext))]
-    [Migration("20240817050928_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241104033406_IntermediateTablePrices")]
+    partial class IntermediateTablePrices
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,10 @@ namespace GestionReservasHotelAPI.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("additional_service_id");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float")
+                        .HasColumnName("price");
+
                     b.Property<Guid>("ReservationId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("reservation_id");
@@ -89,8 +93,8 @@ namespace GestionReservasHotelAPI.Migrations
                         .HasColumnName("address");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("description");
 
                     b.Property<string>("ImageUrl")
@@ -188,6 +192,10 @@ namespace GestionReservasHotelAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
+
+                    b.Property<double>("PriceNight")
+                        .HasColumnType("float")
+                        .HasColumnName("price_night");
 
                     b.Property<Guid>("ReservationId")
                         .HasColumnType("uniqueidentifier")
