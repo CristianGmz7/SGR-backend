@@ -76,36 +76,36 @@ public class GestionReservasHotelContext : IdentityDbContext<UserEntity>
     }
 
     //Descomentar sobreescritura SaveChangesAsync cuando se haga el seeder
-    //public override Task<int> SaveChangesAsync(
-    //CancellationToken cancellationToken = default)
-    //{
-    //    var entries = ChangeTracker
-    //        .Entries()
-    //        .Where(e => e.Entity is BaseEntity && (
-    //            e.State == EntityState.Added ||
-    //            e.State == EntityState.Modified
-    //        ));
+    public override Task<int> SaveChangesAsync(
+    CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker
+            .Entries()
+            .Where(e => e.Entity is BaseEntity && (
+                e.State == EntityState.Added ||
+                e.State == EntityState.Modified
+            ));
 
-    //    foreach (var entry in entries)
-    //    {
-    //        var entity = entry.Entity as BaseEntity;
-    //        if (entity != null)
-    //        {
-    //            if (entry.State == EntityState.Added)
-    //            {
-    //                entity.CreatedBy = _auditService.GetUserId();
-    //                entity.CreatedDate = DateTime.Now;
-    //            }
-    //            else
-    //            {
-    //                entity.UpdatedBy = _auditService.GetUserId();
-    //                entity.UpdatedDate = DateTime.Now;
-    //            }
-    //        }
-    //    }
+        foreach (var entry in entries)
+        {
+            var entity = entry.Entity as BaseEntity;
+            if (entity != null)
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedBy = _auditService.GetUserId();
+                    entity.CreatedDate = DateTime.Now;
+                }
+                else
+                {
+                    entity.UpdatedBy = _auditService.GetUserId();
+                    entity.UpdatedDate = DateTime.Now;
+                }
+            }
+        }
 
-    //    return base.SaveChangesAsync(cancellationToken);
-    //}
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
     public DbSet<HotelEntity> Hotels { get; set; }
     public DbSet<ReservationEntity> Reservations { get; set; }

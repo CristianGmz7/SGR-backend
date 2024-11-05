@@ -64,6 +64,7 @@ public class AuthService : IAuthService
                 Message = "Inicio de sesión satisfactorio",
                 Data = new LoginResponseDto
                 {
+                    FullName = $"{userEntity.FirstName} {userEntity.LastName}",
                     Email = userEntity.Email,       //o dto.Email
                     Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                     TokenExpiration = jwtToken.ValidTo
