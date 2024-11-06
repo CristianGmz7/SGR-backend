@@ -40,8 +40,7 @@ public class Startup
         services.AddTransient<IReservationsService, ReservationsService>();
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IAuditService, AuditService>();
-        //falta que implementar servicio de Audit
-
+        services.AddTransient<IUsersService, UsersService>();
 
         //AddIdentity
         services.AddIdentity<UserEntity, IdentityRole>(options =>
