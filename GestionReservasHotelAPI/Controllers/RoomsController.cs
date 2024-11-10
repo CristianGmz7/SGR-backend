@@ -1,7 +1,9 @@
-﻿using GestionReservasHotelAPI.Dtos.Common;
+﻿using GestionReservasHotelAPI.Constants;
+using GestionReservasHotelAPI.Dtos.Common;
 using GestionReservasHotelAPI.Dtos.Hotels;
 using GestionReservasHotelAPI.Dtos.Rooms;
 using GestionReservasHotelAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionReservasHotelAPI.Controllers;
@@ -9,7 +11,7 @@ namespace GestionReservasHotelAPI.Controllers;
 //[Route("api/rooms")]
 [Route("api/rooms")]
 [ApiController]
-
+[Authorize(AuthenticationSchemes = "Bearer")]
 public class RoomsController : ControllerBase
 {
 
@@ -20,6 +22,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}")]
     public async Task<ActionResult<ResponseDto<List<RoomDto>>>> GetAll()
     {
         var response = await _roomsService.GetRoomsListAsync();
@@ -28,6 +31,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet("GetByHotel/{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<ResponseDto<PaginationDto<HotelDetailDto>>>> GetAllByHotel(Guid id, 
         int page = 1, 
         DateTime filterStartDate = default, 
@@ -39,6 +43,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<ResponseDto<RoomDto>>> GetById(Guid id)
     {
         var response = await _roomsService.GetRoomById(id);
@@ -47,6 +52,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
     public async Task<ActionResult<ResponseDto<RoomDto>>> Create(RoomCreateDto dto)
     {
         var response = await _roomsService.CreateAsync(dto);
@@ -55,6 +61,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
     public async Task<ActionResult<ResponseDto<RoomDto>>> Edit(RoomEditDto dto, Guid id)
     {
         var response = await _roomsService.EditAsync(dto, id);
@@ -63,6 +70,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
     public async Task<ActionResult<ResponseDto<RoomDto>>> Delete(Guid id)
     {
         var response = await _roomsService.DeleteAsync(id);

@@ -88,7 +88,7 @@ public class ReservationsController : ControllerBase
     [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
     public async Task<ActionResult<ResponseDto<ReservationDto>>> Delete (Guid id)
     {
-        var response = await _reservationsService?.DeleteReservationAsync(id);
+        var response = await _reservationsService.DeleteReservationAsync(id);
 
         return StatusCode(response.StatusCode, response);
     }
