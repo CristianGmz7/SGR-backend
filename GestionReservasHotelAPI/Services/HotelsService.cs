@@ -314,7 +314,35 @@ public class HotelsService : IHotelsService
                     };
                 }
 
-                //final
+                //AQUI INICIAN LAS ELIMINACIONES MANUALES DE LOS REGISTRO ASOCIADOS, todo esto debido a configuracion DeleteBehavior.Restrict  
+                // 1. Eliminar registros asociados de las habitaciones del hotel en RoomsReservations
+                var roomIds = await _context.Rooms
+                    .Where(r => r.HotelId == id)
+                    .Select(r => r.Id)
+                    .ToListAsync();
+
+                var roomReservations = await _context.RoomReservations
+                    .Where(rr => roomIds.Contains(rr.RoomId))
+                    .ToListAsync();
+
+                _context.RoomReservations.RemoveRange(roomReservations);
+
+                // 2. Eliminar registros asociados de los servicios adicionales del hotel en AdditionalServicesReservations
+                //      supongo que logica similar a la de eliminar registros asociados de las habitaciones del hotel en RoomsReservations
+                //      no lo estoy implementando porque el hotel que estoy borrando es de prueba y no tiene servicios adicionales ni mucho menos registros en tabla intermedia
+
+                //3. Remover las habitaciones que pertenecian al hotel que se quiere eliminar 
+                var hotelRooms = await _context.Rooms
+                    .Where(r => r.HotelId == id)
+                    .ToListAsync();
+                //anteriormente solo se tenia var hotelRooms = _context.Rooms.Where(r => r.HotelId == id);
+                _context.Rooms.RemoveRange(hotelRooms);
+
+                //4. Remover los servicios adicionales que pertenecial al hotel que se quiere eliminar
+                //      supongo que logica similar a la de eliminar registros asociados de los servicios adicionales del hotel en AdditionalServicesReservations
+                //      no lo estoy implementando porque el hotel que estoy borrando es de prueba y no tiene servicios adicionales
+
+                //final: eliminar el hotel
                 _context.Hotels.Remove(hotelEntity);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -340,4 +368,5 @@ public class HotelsService : IHotelsService
             }
         }
     }
+
 }

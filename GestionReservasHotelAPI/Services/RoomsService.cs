@@ -16,18 +16,21 @@ public class RoomsService : IRoomsService
     private readonly GestionReservasHotelContext _context;
     private readonly IMapper _mapper;
     private readonly IAuditService _auditService;
+    private readonly ILogger<RoomsService> _logger;
     private readonly int PAGE_SIZE;
 
     public RoomsService(
         GestionReservasHotelContext context, 
         IMapper mapper,
         IConfiguration configuration,
-        IAuditService auditService
+        IAuditService auditService,
+        ILogger<RoomsService> logger
         )
     {
         this._context = context;
         this._mapper = mapper;
         this._auditService = auditService;
+        this._logger = logger;
         PAGE_SIZE = configuration.GetValue<int>("Pagination:RoomPageSize");
     }
 
@@ -401,65 +404,96 @@ public class RoomsService : IRoomsService
     //nuevas implementaciones de users verificadas
     public async Task<ResponseDto<RoomDto>> DeleteAsync(Guid id)
     {
-        var roomEntity = await _context.Rooms.FindAsync(id);
-
-        if (roomEntity  == null)
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-            return new ResponseDto<RoomDto>
+            try
             {
-                StatusCode = 404,
-                Status = false,
-                Message = "No se encontro el registro"
-            };
-        }
+                var roomEntity = await _context.Rooms.FindAsync(id);
 
-        //hotel de la habitación que se quiera eliminar
-        var hotelEntity = await _context.Hotels.FindAsync(roomEntity.HotelId);
+                if (roomEntity == null)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 404,
+                        Status = false,
+                        Message = "No se encontro el registro"
+                    };
+                }
 
-        if (hotelEntity == null)
-        {
-            return new ResponseDto<RoomDto>
+                //hotel de la habitación que se quiera eliminar
+                var hotelEntity = await _context.Hotels.FindAsync(roomEntity.HotelId);
+
+                if (hotelEntity == null)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 404,
+                        Status = false,
+                        Message = "El hotel no existe"
+                    };
+                }
+
+                //verificar que el que quiera eliminar una habitacion sea el administrador del hotel de la habitacion
+                var userId = _auditService.GetUserId();
+                if (userId != hotelEntity.AdminUserId)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 400,
+                        Status = false,
+                        Message = "Solo el administrador del hotel puede eliminar sus habitaciones"
+                    };
+                }
+
+                //verificacion que la habitacion no tenga reservaciones cuya fecha fin sea mayor a la actual
+                bool hasActiveReservations = await _context.Reservations
+                    .AnyAsync(res => res.Rooms.Any(rr => rr.RoomId == id) && res.FinishDate > DateTime.Now);
+
+                if (hasActiveReservations)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 400,
+                        Status = false,
+                        Message = "No se puede eliminar la habitación porque tiene reservas activas"
+                    };
+                }
+
+                // Eliminar manualmente las referencias en la tabla intermedia rooms_reservations donde esta la room que quiere eliminarse
+                var roomReservations = await _context.RoomReservations
+                    .Where(rr => rr.RoomId == id)
+                    .ToListAsync();
+                _context.RoomReservations.RemoveRange(roomReservations);
+
+                //IMPORTANTE: ELIMINADA LA HABITACIÓN AL MOMENTO DE CUANDO SE MUESTRE LA LISTA DE RESERVACIONES DONDE HAYA ESTADO LA HABITACION ELIMINADA
+                //  PUEDE DAR PROBLEMAS DE CONGRUENCIA EN LOS DATOS, SE TIENE QUE PROBAR ESTE ENDPOINT A VER COMO RESPONDE EL FRONTEND ANTE LA AUSENCIA DE UNA HABITACION
+                //      PUEDE OCURRIR DE MANERA SIMILAR CUANDO SE ELIMINE UN SERVICIO ADICIONAL
+
+                //eliminar la habitacion
+                _context.Rooms.Remove(roomEntity);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return new ResponseDto<RoomDto>
+                {
+                    StatusCode = 200,
+                    Status = true,
+                    Message = "Registro borrado existosamente"
+                };
+            }
+            catch (Exception e)
             {
-                StatusCode = 404,
-                Status = false,
-                Message = "El hotel no existe"
-            };
+                await transaction.RollbackAsync();
+                _logger.LogError(e, "Error al borrar la habitacion");
+
+                return new ResponseDto<RoomDto>
+                {
+                    StatusCode = 500,
+                    Status = false,
+                    Message = "Error al borrar la habitacion"
+                };
+            }
         }
-
-        //verificar que el que quiera eliminar una habitacion sea el administrador del hotel de la habitacion
-        var userId = _auditService.GetUserId();
-        if (userId != hotelEntity.AdminUserId)
-        {
-            return new ResponseDto<RoomDto>
-            {
-                StatusCode = 400,
-                Status = false,
-                Message = "Solo el administrador del hotel puede eliminar sus habitaciones"
-            };
-        }
-
-        //verificacion que la habitacion no tenga reservaciones cuya fecha fin sea mayor a la actual
-        bool hasActiveReservations = await _context.Reservations
-            .AnyAsync(res => res.Rooms.Any(rr => rr.RoomId == id) && res.FinishDate > DateTime.Now);
-
-        if (hasActiveReservations)
-        {
-            return new ResponseDto<RoomDto>
-            {
-                StatusCode = 400,
-                Status = false,
-                Message = "No se puede eliminar la habitación porque tiene reservas activas"
-            };
-        }
-
-        _context.Rooms.Remove(roomEntity);
-        await _context.SaveChangesAsync();
-
-        return new ResponseDto<RoomDto>
-        {
-            StatusCode = 200,
-            Status = true,
-            Message = "Registro borrado existosamente"
-        };
     }
 }

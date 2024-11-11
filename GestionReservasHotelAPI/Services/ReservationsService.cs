@@ -880,9 +880,12 @@ public class ReservationsService : IReservationsService
         {
             try
             {
-                var reservationEntity = await _context.Reservations.FindAsync(id);
+                //var reservationEntity = await _context.Reservations.FindAsync(id);
+                var reservationEntity = await _context.Reservations
+                    .Include(r => r.Rooms)      //incluir dependencias debido a configuracion DeleteBehavior.Restrict
+                    .FirstOrDefaultAsync(r => r.Id == id);
 
-                if(reservationEntity is null)
+                if (reservationEntity is null)
                 {
                     return new ResponseDto<ReservationDto>
                     {
@@ -892,6 +895,10 @@ public class ReservationsService : IReservationsService
                     };
                 }
 
+                //eliminar las Rooms (conexion con RoomReservationEntity) antes que la entidad principal
+                _context.RoomReservations.RemoveRange(reservationEntity.Rooms);
+
+                //eliminar reservacion
                 _context.Reservations.Remove(reservationEntity);
                 await _context.SaveChangesAsync();
 
