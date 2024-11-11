@@ -328,8 +328,16 @@ public class HotelsService : IHotelsService
                 _context.RoomReservations.RemoveRange(roomReservations);
 
                 // 2. Eliminar registros asociados de los servicios adicionales del hotel en AdditionalServicesReservations
-                //      supongo que logica similar a la de eliminar registros asociados de las habitaciones del hotel en RoomsReservations
-                //      no lo estoy implementando porque el hotel que estoy borrando es de prueba y no tiene servicios adicionales ni mucho menos registros en tabla intermedia
+                var additionalServicesIds = await _context.AdditionalServices
+                    .Where(aS => aS.HotelId == id)
+                    .Select(aS => aS.Id)
+                    .ToListAsync();
+
+                var additionalServicesReservations = await _context.AdditionalServiceReservations
+                    .Where(asr => additionalServicesIds.Contains(asr.AdditionalServiceId))
+                    .ToListAsync();
+
+                _context.AdditionalServiceReservations.RemoveRange(additionalServicesReservations);
 
                 //3. Remover las habitaciones que pertenecian al hotel que se quiere eliminar 
                 var hotelRooms = await _context.Rooms
@@ -338,9 +346,11 @@ public class HotelsService : IHotelsService
                 //anteriormente solo se tenia var hotelRooms = _context.Rooms.Where(r => r.HotelId == id);
                 _context.Rooms.RemoveRange(hotelRooms);
 
-                //4. Remover los servicios adicionales que pertenecial al hotel que se quiere eliminar
-                //      supongo que logica similar a la de eliminar registros asociados de los servicios adicionales del hotel en AdditionalServicesReservations
-                //      no lo estoy implementando porque el hotel que estoy borrando es de prueba y no tiene servicios adicionales
+                //4. Remover los servicios adicionales que pertenecian al hotel que se quiere eliminar
+                var hotelAdditionalServices = await _context.AdditionalServices
+                    .Where(aS => aS.HotelId == id)
+                    .ToListAsync();
+                _context.AdditionalServices.RemoveRange(hotelAdditionalServices);
 
                 //final: eliminar el hotel
                 _context.Hotels.Remove(hotelEntity);
