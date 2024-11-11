@@ -35,5 +35,13 @@ namespace GestionReservasHotelAPI.Controllers
             var response = await _authService.RegisterAsync(dto);
             return StatusCode(response.StatusCode, response);
         }
+
+        [HttpPost("refresh-token")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ResponseDto<LoginResponseDto>>> RefreshToken(RefreshTokenDto dto)
+        {
+            var response = await _authService.RefreshTokenAsync(dto);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

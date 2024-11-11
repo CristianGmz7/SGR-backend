@@ -23,7 +23,7 @@ public class UserEntity : IdentityUser
     [Column("refresh_token_expire")]
     public DateTime RefreshTokenExpire { get; set; }
 
-    //agregado para funcionalidad del seeder
+    //agregado para funcionalidad del seeder: la de que haya un usuario por hotel
     //Comentar despues de ejecutar el seeder y descomentar sobreescritura SaveChangesAsync Context
     // Se debe comentar también el metodo LoadHotelAsync del Seeder despues de ejecutarse
     public ICollection<IdentityUserRole<string>> UserRoles { get; set; } = new List<IdentityUserRole<string>>();
