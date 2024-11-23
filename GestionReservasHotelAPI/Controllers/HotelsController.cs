@@ -24,7 +24,6 @@ public class HotelsController : ControllerBase
     public async Task<ActionResult<ResponseDto<PaginationDto<List<HotelDto>>>>> GetAll(int page = 1)
     {
         var response = await _hotelsService.GetHotelsListAsync(page);
-
         return StatusCode(response.StatusCode, response);
     }
 
