@@ -883,6 +883,7 @@ public class ReservationsService : IReservationsService
                 //var reservationEntity = await _context.Reservations.FindAsync(id);
                 var reservationEntity = await _context.Reservations
                     .Include(r => r.Rooms)      //incluir dependencias debido a configuracion DeleteBehavior.Restrict
+                    .Include(r => r.AdditionalServices)
                     .FirstOrDefaultAsync(r => r.Id == id);
 
                 if (reservationEntity is null)
@@ -896,7 +897,18 @@ public class ReservationsService : IReservationsService
                 }
 
                 //eliminar las Rooms (conexion con RoomReservationEntity) antes que la entidad principal
+                // Eliminar manualmente las referencias en la tabla intermedia rooms_reservations donde esta la room que quiere eliminarse
+                //var roomReservations = await _context.RoomReservations
+                //    .Where(rr => rr.RoomId == id)
+                //    .ToListAsync();
+                //_context.RoomReservations.RemoveRange(roomReservations);
                 _context.RoomReservations.RemoveRange(reservationEntity.Rooms);
+
+                //var additionalServicesReservations = await _context.AdditionalServiceReservations
+                //    .Where(asr => asr.AdditionalServiceId == id)
+                //    .ToListAsync();
+                //_context.AdditionalServiceReservations.RemoveRange(additionalServicesReservations);
+                _context.AdditionalServiceReservations.RemoveRange(reservationEntity.AdditionalServices);
 
                 //eliminar reservacion
                 _context.Reservations.Remove(reservationEntity);
