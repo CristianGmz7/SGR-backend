@@ -5,5 +5,6 @@ namespace GestionReservasHotelAPI.Services.Interfaces;
 
 public interface IUsersService
 {
-    Task<ResponseDto<UserResponseDto>> ChangeRoleAsync(UserChangeRoleDto dto, string id);
+    Task<ResponseDto<List<BasicUserInformationResponseDto>>> GetUserListAsync();
+    Task<ResponseDto<List<BasicUserInformationResponseDto>>> GetUsersListWithUserRoleAsync(string searchTerm = "");
 }

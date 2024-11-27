@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GestionReservasHotelAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class SecuritySchemeAndAuditFields : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,6 +42,7 @@ namespace GestionReservasHotelAPI.Migrations
                     last_name = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     refresh_token = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     refresh_token_expire = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    profile_picture_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

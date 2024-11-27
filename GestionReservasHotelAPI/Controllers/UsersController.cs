@@ -20,12 +20,19 @@ public class UsersController : ControllerBase
         this._usersService = usersService;
     }
 
-    [HttpPut("change-role/{id}")]
+    [HttpGet("allUsersWithUserRole")]
     [Authorize(Roles = $"{RolesConstant.PAGEADMIN}")]
-    public async Task<ActionResult<ResponseDto<UserResponseDto>>> ChangeUserRole (UserChangeRoleDto dto, string id)
+    public async Task<ActionResult<ResponseDto<List<BasicUserInformationResponseDto>>>> GetUsersWithUserRole(string searchTerm)
     {
-        var response = await _usersService.ChangeRoleAsync(dto, id);
+        var response = await _usersService.GetUsersListWithUserRoleAsync(searchTerm);
+        return StatusCode(response.StatusCode, response);
+    }
 
+    [HttpGet("allUsers")]
+    [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
+    public async Task<ActionResult<ResponseDto<List<BasicUserInformationResponseDto>>>> GetAllUsers()
+    {
+        var response = await _usersService.GetUserListAsync();
         return StatusCode(response.StatusCode, response);
     }
 }

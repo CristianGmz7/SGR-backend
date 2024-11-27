@@ -58,7 +58,8 @@ namespace GestionReservasHotelAPI.Database
                         FirstName = "Administrador Pagina",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "pageadmin@sgr.com",
-                        UserName = "pageadmin@sgr.com"
+                        UserName = "pageadmin@sgr.com",
+                        ProfilePictureUrl = "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg"
                     };
 
                     // administradores de los hoteles que vienen del seeder
@@ -67,42 +68,49 @@ namespace GestionReservasHotelAPI.Database
                         FirstName = "Administrador Hotel 1",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "hoteladmin1@sgr.com",
-                        UserName = "hoteladmin1@sgr.com"
+                        UserName = "hoteladmin1@sgr.com",
+                        ProfilePictureUrl = "https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                     };
                     var userHotelAdmin2 = new UserEntity
                     {
                         FirstName = "Administrador Hotel 2",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "hoteladmin2@sgr.com",
-                        UserName = "hoteladmin2@sgr.com"
+                        UserName = "hoteladmin2@sgr.com",
+                        ProfilePictureUrl = "https://images.pexels.com/photos/634021/pexels-photo-634021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                     };
                     var userHotelAdmin3 = new UserEntity
                     {
                         FirstName = "Administrador Hotel 3",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "hoteladmin3@sgr.com",
-                        UserName = "hoteladmin3@sgr.com"
+                        UserName = "hoteladmin3@sgr.com",
+                        ProfilePictureUrl = "https://images.pexels.com/photos/1370750/pexels-photo-1370750.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                     };
                     var userHotelAdmin4 = new UserEntity
                     {
                         FirstName = "Administrador Hotel 4",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "hoteladmin4@sgr.com",
-                        UserName = "hoteladmin4@sgr.com"
+                        UserName = "hoteladmin4@sgr.com",
+                        ProfilePictureUrl = "https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+
                     };
                     var userHotelAdmin5 = new UserEntity
                     {
                         FirstName = "Administrador Hotel 5",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "hoteladmin5@sgr.com",
-                        UserName = "hoteladmin5@sgr.com"
+                        UserName = "hoteladmin5@sgr.com",
+                        ProfilePictureUrl = "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     };
                     var userHotelAdmin6 = new UserEntity
                     {
                         FirstName = "Administrador Hotel 6",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "hoteladmin6@sgr.com",
-                        UserName = "hoteladmin6@sgr.com"
+                        UserName = "hoteladmin6@sgr.com",
+                        ProfilePictureUrl = "https://images.unsplash.com/photo-1605974710431-32715cc561b3?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     };
 
                     var normalUser = new UserEntity
@@ -110,7 +118,8 @@ namespace GestionReservasHotelAPI.Database
                         FirstName = "User",
                         LastName = "Sistema Gestion Reservas Hotel",
                         Email = "user@sgr.com",
-                        UserName = "user@sgr.com"
+                        UserName = "user@sgr.com",
+                        ProfilePictureUrl = "https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     };
 
                     await userManager.CreateAsync(userPageAdmin, "Temporal01*");

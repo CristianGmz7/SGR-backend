@@ -1,4 +1,5 @@
-﻿using GestionReservasHotelAPI.Database;
+﻿using GestionReservasHotelAPI.Constants;
+using GestionReservasHotelAPI.Database;
 using GestionReservasHotelAPI.Database.Entities;
 using GestionReservasHotelAPI.Dtos.Common;
 using GestionReservasHotelAPI.Dtos.Users;
@@ -13,104 +14,89 @@ public class UsersService : IUsersService
     private readonly GestionReservasHotelContext _context;
     private readonly ILogger _logger;
     private readonly UserManager<UserEntity> _userManager;
+    private readonly IAuditService _auditService;
 
     public UsersService(
             GestionReservasHotelContext context,
             ILogger<UsersService> logger,
-            UserManager<UserEntity> userManager
+            UserManager<UserEntity> userManager,
+            IAuditService auditService
         )
     {
         this._context = context;
         this._logger = logger;
         this._userManager = userManager;
+        this._auditService = auditService;
     }
 
-    //metodo que se usará para cambiar el rol de un usuario a admin hotel o viceversa
-    //esto no sera necesario ya se implementó en el HotelCreate y HotelDelete
-    public async Task<ResponseDto<UserResponseDto>> ChangeRoleAsync (UserChangeRoleDto dto, string id)
+    //este metodo se usará para crear reservaciones a responsabilidad de ese usuario
+    public async Task<ResponseDto<List<BasicUserInformationResponseDto>>> GetUserListAsync()
     {
-        using (var transaction = await _context.Database.BeginTransactionAsync())
+        // Obtén el ID del usuario actualmente logueado
+        string currentUserId = _auditService.GetUserId();
+
+        // Consulta la base de datos para obtener todos los usuarios excepto el logueado
+        var usersEntity = await _context.Users
+            .Where(u => u.Id != currentUserId) // Filtrar el usuario logueado
+            .ToListAsync();
+
+        // Mapea los usuarios a DTOs
+        var users = usersEntity.Select(u => new BasicUserInformationResponseDto
         {
-            try
-            {
-                var existRole = await _context.Roles.FindAsync(dto.RolId);
+            Id = u.Id,
+            FullName = u.FirstName + " " + u.LastName,
+            Email = u.Email,
+            ProfilePictureUrl = u.ProfilePictureUrl
+        }).ToList();
 
-                if (existRole == null)
-                {
-                    return new ResponseDto<UserResponseDto>
-                    {
-                        StatusCode = 404,
-                        Status = false,
-                        Message = "El rol no existe"
-                    };
-                }
+        // Retorna la respuesta
+        return new ResponseDto<List<BasicUserInformationResponseDto>>
+        {
+            StatusCode = 200,
+            Status = true,
+            Message = "Lista de usuarios obtenida correctamente",
+            Data = users
+        };
+    }
 
-                var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+    //si queda chance averiguar acerca de la paginacion en el metodo anterior para que se use dentro de un select
 
-                if (userEntity == null)
-                {
-                    return new ResponseDto<UserResponseDto>
-                    {
-                        StatusCode = 404,
-                        Status = false,
-                        Message = "No se encontró el usuario"
-                    };
-                }
+    //este metodo se usará para crear hoteles y asignar el role de HOTELADMIN
+    public async Task<ResponseDto<List<BasicUserInformationResponseDto>>> GetUsersListWithUserRoleAsync(string searchTerm = "")
+    {
+        string currentUserId = _auditService.GetUserId();
 
-                //Eliminar registro anterior del rol antes de crear el nuevo (esto debido al efecto cascada)
-                var userRoles = await _context.UserRoles
-                    .Where(ur => ur.UserId == userEntity.Id)
-                    .ToListAsync();
+        //var usersEntity = await _context.Users
+        //    .Where(u => u.Id != currentUserId &&
+        //                u.UserRoles.Any(ur => _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == RolesConstant.USER)))
+        //    .ToListAsync();
+        var userQuery = _context.Users
+            .Where(u => u.Id != currentUserId &&
+                u.UserRoles.Any(ur => _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == RolesConstant.USER)));
 
-                _context.UserRoles.RemoveRange(userRoles);
-
-                //Agregar el nuevo rol que se manda
-                var roleResult = await _userManager.AddToRoleAsync(userEntity, existRole.Name);
-
-                if (!roleResult.Succeeded)
-                {
-                    await transaction.RollbackAsync();
-                    return new ResponseDto<UserResponseDto>
-                    {
-                        StatusCode = 500,
-                        Status = false,
-                        Message = string.Join(", ", roleResult.Errors.Select(e => e.Description))
-                    };
-                }
-
-                //antes de retornar la respuesta cerrar transaccion con un commit
-                //throw new Exception("Error para probar el Rollback.");
-                await transaction.CommitAsync();
-
-                var userDto = new UserResponseDto
-                {
-                    Id = userEntity.Id,
-                    FirstName = userEntity.FirstName,
-                    LastName = userEntity.LastName,
-                    Email = userEntity.Email,
-                    //RolId = dto.RolId,        //funciona con cualquiera de los dos
-                    RolId = existRole.Id
-                };
-
-                return new ResponseDto<UserResponseDto>
-                {
-                    StatusCode = 200,
-                    Status = true,
-                    Message = "Usuario editado satisfactoriamente",
-                    Data = userDto,
-                };
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                _logger.LogError(e, "Se produjo un error al cambiar el rol del usuario.");
-                return new ResponseDto<UserResponseDto>
-                {
-                    StatusCode = 500,
-                    Status = false,
-                    Message = "Se produjo un error al cambiar el rol del usuario."
-                };
-            }
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            userQuery = userQuery
+                .Where(x => (x.FirstName + " " + x.LastName + " " + x.Id)
+                .ToLower().Contains(searchTerm.ToLower()));
         }
+
+        var usersEntity = await userQuery.ToListAsync();
+
+        var usersDto = usersEntity.Select(u => new BasicUserInformationResponseDto
+        {
+            Id = u.Id,
+            FullName = u.FirstName + " " + u.LastName,
+            Email = u.Email,
+            ProfilePictureUrl = u.ProfilePictureUrl
+        }).ToList();
+
+        return new ResponseDto<List<BasicUserInformationResponseDto>>
+        {
+            StatusCode = 200,
+            Status = true,
+            Message = "Lista de usuarios con rol USER obtenida correctamente",
+            Data = usersDto
+        };
     }
 }

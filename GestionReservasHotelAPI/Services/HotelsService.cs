@@ -38,20 +38,27 @@ public class HotelsService : IHotelsService
     }
 
     public async Task<ResponseDto<PaginationDto<List<HotelDto>>>> GetHotelsListAsync(
+        string searchTerm = "",
         int page = 1)
     {
         int startIndex = (page - 1) * PAGE_SIZE;
 
-        //validacion falsa para que todso los hoteles los pase al Query
-        var hotelEntityQuery = _context.Hotels
-            .Where(x => x.Id == x.Id);
+        // Filtro base que incluye todos los hoteles
+        var hotelEntityQuery = _context.Hotels.AsQueryable();
+
+        // Si searchTerm no está vacío, se agrega el filtro
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            hotelEntityQuery = hotelEntityQuery.Where(x =>
+                (x.Name + " " + x.Description + " " + x.Overview + " " + x.Address)
+                .ToLower().Contains(searchTerm.ToLower()));
+        }
 
         int totalHotels = await hotelEntityQuery.CountAsync();
-
         int totalPages = (int)Math.Ceiling((double)totalHotels / PAGE_SIZE);
 
-        //¿Que factor usar de filtro como ordenamiento?
-        var hotelsEntity = await _context.Hotels
+        // Paginación y ordenamiento
+        var hotelsEntity = await hotelEntityQuery
             .OrderBy(x => x.Name)
             .Skip(startIndex)
             .Take(PAGE_SIZE)
@@ -76,6 +83,7 @@ public class HotelsService : IHotelsService
             }
         };
     }
+
 
     public async Task<ResponseDto<HotelDto>> GetHotelByIdAsync(Guid id)
     {
@@ -110,8 +118,9 @@ public class HotelsService : IHotelsService
             {
                 //validaciones acerca del usuario que será encargado del hotel
 
-                string adminHotelId = "00d3f5ce-36e7-4f60-a7e8-b791f7628da5";
-                var adminHotelRole = await _context.Roles.FindAsync(adminHotelId);
+                //string adminHotelId = "00d3f5ce-36e7-4f60-a7e8-b791f7628da5";
+                //var adminHotelRole = await _context.Roles.FindAsync(adminHotelId);
+                var adminHotelRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == RolesConstant.HOTELADMIN);
 
                 if (adminHotelRole == null)
                 {
@@ -268,8 +277,9 @@ public class HotelsService : IHotelsService
                 }
 
                 //cambiar el rol del que era admin hotel a user
-                string userId = "0416b6e2-509c-42e0-acf3-a1157e623d9b";
-                var userRole = await _context.Roles.FindAsync(userId);
+                //string userId = "0416b6e2-509c-42e0-acf3-a1157e623d9b";
+                //var userRole = await _context.Roles.FindAsync(userId);
+                var userRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == RolesConstant.USER);
 
                 if (userRole == null)
                 {

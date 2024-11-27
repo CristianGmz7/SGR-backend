@@ -96,6 +96,7 @@ public class AuthService : IAuthService
             LastName = dto.LastName,
             UserName = dto.Email,
             Email = dto.Email,
+            ProfilePictureUrl = dto.ProfilePictureUrl,
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);

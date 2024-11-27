@@ -21,9 +21,10 @@ public class HotelsController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<ResponseDto<PaginationDto<List<HotelDto>>>>> GetAll(int page = 1)
+    public async Task<ActionResult<ResponseDto<PaginationDto<List<HotelDto>>>>> GetAll(
+        string searchTerm, int page = 1)
     {
-        var response = await _hotelsService.GetHotelsListAsync(page);
+        var response = await _hotelsService.GetHotelsListAsync(searchTerm, page);
         return StatusCode(response.StatusCode, response);
     }
 

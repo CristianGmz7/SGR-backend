@@ -28,4 +28,8 @@ public class UserEntity : IdentityUser
     // Se debe comentar también el metodo LoadHotelAsync del Seeder despues de ejecutarse
     public ICollection<IdentityUserRole<string>> UserRoles { get; set; } = new List<IdentityUserRole<string>>();
 
+    //implementar url de imagen de perfil
+    [Column("profile_picture_url")]
+    public string ProfilePictureUrl { get; set; }
+
 }

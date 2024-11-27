@@ -41,6 +41,8 @@ public class Startup
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IAuditService, AuditService>();
         services.AddTransient<IUsersService, UsersService>();
+        services.AddTransient<IDashboardAdminHotelService, DashboardAdminHotelService>();
+        services.AddTransient<IDashboardAdminPageService, DashboardAdminPageService>();
 
         //AddIdentity
         services.AddIdentity<UserEntity, IdentityRole>(options =>

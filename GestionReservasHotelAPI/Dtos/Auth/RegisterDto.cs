@@ -33,4 +33,7 @@ public class RegisterDto
     [Compare(nameof(Password), ErrorMessage = "Las contraseñas no coinciden")]
     public string ConfirmPassword { get; set; }
     // desconfianza del frontend
+
+    [Display(Name = "Foto de perfil")]
+    public string ProfilePictureUrl { get; set; }
 }

@@ -404,6 +404,10 @@ namespace GestionReservasHotelAPI.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("profile_picture_url");
+
                     b.Property<string>("RefreshToken")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")

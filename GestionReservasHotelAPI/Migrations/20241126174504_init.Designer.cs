@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionReservasHotelAPI.Migrations
 {
     [DbContext(typeof(GestionReservasHotelContext))]
-    [Migration("20241104164731_SecuritySchemeAndAuditFields")]
-    partial class SecuritySchemeAndAuditFields
+    [Migration("20241126174504_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -406,6 +406,10 @@ namespace GestionReservasHotelAPI.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("profile_picture_url");
 
                     b.Property<string>("RefreshToken")
                         .HasMaxLength(450)
