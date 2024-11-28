@@ -26,7 +26,7 @@ public class DashboardAdminHotelService : IDashboardAdminHotelService
         this._configuration = configuration;
     }
 
-    public async Task<ResponseDto<DashboardHotelIdResponseDto>> GetHotelIdAsync()
+    public async Task<ResponseDto<DashboardHotelIdNameResponseDto>> GetHotelIdNameAsync()
     {
         // Obtén el ID del usuario actualmente logueado
         string currentUserId = _auditService.GetUserId();
@@ -40,7 +40,7 @@ public class DashboardAdminHotelService : IDashboardAdminHotelService
         if (hotelEntity == null)
         {
             _logger.LogWarning($"No se encontró ningún hotel administrado por el usuario con ID {currentUserId}");
-            return new ResponseDto<DashboardHotelIdResponseDto>
+            return new ResponseDto<DashboardHotelIdNameResponseDto>
             {
                 StatusCode = 404,
                 Status = false,
@@ -49,13 +49,14 @@ public class DashboardAdminHotelService : IDashboardAdminHotelService
         }
 
         // Mapea la entidad al DTO
-        var hotelDto = new DashboardHotelIdResponseDto
+        var hotelDto = new DashboardHotelIdNameResponseDto
         {
-            Id = hotelEntity.Id
+            Id = hotelEntity.Id,
+            Name = hotelEntity.Name,
         };
 
         // Retorna la respuesta con el DTO
-        return new ResponseDto<DashboardHotelIdResponseDto>
+        return new ResponseDto<DashboardHotelIdNameResponseDto>
         {
             StatusCode = 200,
             Status = true,

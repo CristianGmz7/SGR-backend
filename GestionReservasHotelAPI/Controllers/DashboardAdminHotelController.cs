@@ -1,5 +1,6 @@
 ﻿using GestionReservasHotelAPI.Constants;
 using GestionReservasHotelAPI.Dtos.Common;
+using GestionReservasHotelAPI.Dtos.Dashboards.DashboardAdminHotel;
 using GestionReservasHotelAPI.Dtos.Users;
 using GestionReservasHotelAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,11 +21,11 @@ public class DashboardAdminHotelController : ControllerBase
         this._dashboardAdminHotelService = dashboardAdminHotelService;
     }
 
-    [HttpGet("getHotelId")]
+    [HttpGet("getHotelIdName")]
     [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
-    public async Task<ActionResult<ResponseDto<BasicUserInformationResponseDto>>> GetHotelId()
+    public async Task<ActionResult<ResponseDto<DashboardHotelIdNameResponseDto>>> GetHotelIdNameAsync()
     {
-        var response = await _dashboardAdminHotelService.GetHotelIdAsync();
+        var response = await _dashboardAdminHotelService.GetHotelIdNameAsync();
         return StatusCode(response.StatusCode, response);
     }
 }

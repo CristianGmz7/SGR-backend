@@ -1,6 +1,7 @@
 ﻿namespace GestionReservasHotelAPI.Dtos.Dashboards.DashboardAdminHotel;
 
-public class DashboardHotelIdResponseDto
+public class DashboardHotelIdNameResponseDto
 {
     public Guid Id { get; set; }
+    public string Name { get; set; }
 }

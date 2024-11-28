@@ -5,5 +5,5 @@ namespace GestionReservasHotelAPI.Services.Interfaces;
 
 public interface IDashboardAdminHotelService
 {
-    Task<ResponseDto<DashboardHotelIdResponseDto>> GetHotelIdAsync();
+    Task<ResponseDto<DashboardHotelIdNameResponseDto>> GetHotelIdNameAsync();
 }
