@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionReservasHotelAPI.Migrations
 {
     [DbContext(typeof(GestionReservasHotelContext))]
-    [Migration("20241126174504_init")]
+    [Migration("20241129215900_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -205,7 +205,7 @@ namespace GestionReservasHotelAPI.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("ClientId")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("client_id");
 
                     b.Property<string>("CreatedBy")
@@ -239,6 +239,8 @@ namespace GestionReservasHotelAPI.Migrations
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("CreatedBy");
 
@@ -660,6 +662,11 @@ namespace GestionReservasHotelAPI.Migrations
 
             modelBuilder.Entity("GestionReservasHotelAPI.Database.Entities.ReservationEntity", b =>
                 {
+                    b.HasOne("GestionReservasHotelAPI.Database.Entities.UserEntity", "ClientEntity")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("GestionReservasHotelAPI.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
@@ -669,6 +676,8 @@ namespace GestionReservasHotelAPI.Migrations
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ClientEntity");
 
                     b.Navigation("CreatedByUser");
 

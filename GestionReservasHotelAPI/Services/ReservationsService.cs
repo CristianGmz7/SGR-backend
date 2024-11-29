@@ -6,6 +6,7 @@ using GestionReservasHotelAPI.Dtos.Common;
 using GestionReservasHotelAPI.Dtos.Hotels;
 using GestionReservasHotelAPI.Dtos.Reservations;
 using GestionReservasHotelAPI.Dtos.Rooms;
+using GestionReservasHotelAPI.Dtos.Users;
 using GestionReservasHotelAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -119,6 +120,7 @@ public class ReservationsService : IReservationsService
 
     //metodo que obtiene lista de reservas por rango de fechas
     //este metodo será implementando posteriormente
+    //esto metodo creo que tocará eliminarlo
     public async Task<ResponseDto<PaginationDto<List<ReservationDto>>>> GetReservationListBetweenDates(
         string clientId = "", int page = 1, DateTime filterStartDate = default, 
         DateTime filterEndDate = default)
@@ -939,4 +941,99 @@ public class ReservationsService : IReservationsService
         }
     }
 
+    public async Task<ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>> GetAllReservationsByHotel (Guid hotelId, int page = 1)
+    {
+        var hotelEntity = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == hotelId);
+        if (hotelEntity == null)
+        {
+            return new ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>
+            {
+                StatusCode = 404,
+                Status = false,
+                Message = "No se encontró el registro."
+            };
+        }
+
+        var hotelAdminId = _auditService.GetUserId();
+        if (hotelAdminId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede obtener todas sus reservaciones."
+            };
+        }
+
+        int startIndex = (page - 1) * PAGE_SIZE;
+
+        var reservationQuery = _context.Reservations
+            .Include(r => r.Rooms)
+                .ThenInclude(rr => rr.Room)
+            .Include(r => r.AdditionalServices)
+                .ThenInclude(asr => asr.AdditionalService)
+            .Include(r => r.ClientEntity)
+            .Where(r => r.Rooms.Any(rr => rr.Room.HotelId == hotelId));
+
+        int totalReservations = await reservationQuery.CountAsync();
+        int totalPages = (int)Math.Ceiling((double)totalReservations / PAGE_SIZE);
+
+        var reservations = await reservationQuery
+            .OrderByDescending(r => r.FinishDate)
+            .Skip(startIndex)
+            .Take(PAGE_SIZE)
+            .ToListAsync();
+
+        var reservationDtos = reservations.Select(reservation => new ReservationAdminHotelResponseDto
+        {
+            Id = reservation.Id,
+            StartDate = reservation.StartDate,
+            FinishDate = reservation.FinishDate,
+            Condition = DateTime.Now < reservation.FinishDate ? "CONFIRMADA" : "COMPLETADA",
+            Price = reservation.Price,
+            Client = new BasicUserInformationResponseDto
+            {
+                Id = reservation.ClientEntity.Id,
+                FullName = reservation.ClientEntity.FirstName + reservation.ClientEntity.LastName,
+                Email = reservation.ClientEntity.Email,
+                ProfilePictureUrl = reservation.ClientEntity.ProfilePictureUrl
+            },
+            RoomsInfoList = reservation.Rooms.Select(rR => new RoomDto
+            {
+                Id = rR.Room.Id,
+                NumberRoom = rR.Room.NumberRoom,
+                TypeRoom = rR.Room.TypeRoom,
+                PriceNight = rR.PriceNight,
+                ImageUrl = rR.Room.ImageUrl,
+                HotelInfo = new HotelDto
+                {
+                    Id = rR.Room.Hotel.Id,
+                    Name = rR.Room.Hotel.Name
+                }
+            }).ToList(),
+            AdditionalServicesInfoList = reservation.AdditionalServices.Select(aS => new AdditionalServiceDto
+            {
+                Id = aS.AdditionalService.Id,
+                Name = aS.AdditionalService.Name,
+                Price = aS.Price
+            }).ToList()
+        }).ToList();
+
+        return new ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>
+        {
+            StatusCode = 200,
+            Status = true,
+            Message = "Reservas encontradas exitosamente",
+            Data = new PaginationDto<List<ReservationAdminHotelResponseDto>>
+            {
+                CurrentPage = page,
+                PageSize = PAGE_SIZE,
+                TotalItems = totalReservations,
+                TotalPages = totalPages,
+                Items = reservationDtos,
+                HasPreviousPage = page > 1,
+                HasNextPage = page < totalPages
+            }
+        };
+    }
 }

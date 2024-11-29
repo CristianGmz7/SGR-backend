@@ -140,7 +140,7 @@ namespace GestionReservasHotelAPI.Migrations
                     start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     finish_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     price = table.Column<double>(type: "float", nullable: false),
-                    client_id = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    client_id = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
@@ -149,6 +149,13 @@ namespace GestionReservasHotelAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_reservations", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_reservations_users_client_id",
+                        column: x => x.client_id,
+                        principalSchema: "security",
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_reservations_users_created_by",
                         column: x => x.created_by,
@@ -494,6 +501,12 @@ namespace GestionReservasHotelAPI.Migrations
                 schema: "dbo",
                 table: "hotels",
                 column: "updated_by");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_reservations_client_id",
+                schema: "dbo",
+                table: "reservations",
+                column: "client_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_reservations_created_by",
