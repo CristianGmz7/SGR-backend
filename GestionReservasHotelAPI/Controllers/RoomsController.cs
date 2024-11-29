@@ -42,6 +42,17 @@ public class RoomsController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
+    [HttpGet("GetByAdminHotel/{id}")]
+    [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
+    public async Task<ActionResult<ResponseDto<PaginationDto<HotelDetailDto>>>> GetAllByAdminHotel(Guid id,
+    string searchTerm,
+    int page = 1)
+    {
+        var response = await _roomsService.GetRoomsByAdminHotelAsync(id, searchTerm, page);
+
+        return StatusCode(response.StatusCode, response);
+    }
+
     [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<ActionResult<ResponseDto<RoomDto>>> GetById(Guid id)

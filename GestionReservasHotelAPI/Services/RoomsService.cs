@@ -496,4 +496,104 @@ public class RoomsService : IRoomsService
             }
         }
     }
+
+    //Nuevo metodo implementando obtener todas las habitaciones sin importar las fechas, solo para dashboardHotelPage
+    public async Task<ResponseDto<PaginationDto<HotelDetailDto>>> GetRoomsByAdminHotelAsync (
+     Guid id, string searchTerm = "", int page = 1)
+    {
+        var hotelEntity = await _context.Hotels.FindAsync(id);
+
+        if (hotelEntity == null)
+        {
+            return new ResponseDto<PaginationDto<HotelDetailDto>>
+            {
+                StatusCode = 404,
+                Status = false,
+                Message = "El hotel no existe"
+            };
+        }
+
+        //verificar que el que quiera crear una habitacion sea el administrador del hotel de la habitacion
+        var userId = _auditService.GetUserId();
+        if (userId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<PaginationDto<HotelDetailDto>>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede ver todas las habitaciones para su administracion"
+            };
+        }
+
+        int startIndex = (page - 1) * PAGE_SIZE;
+
+        var roomEntityQuery = _context.Rooms
+            .Include(x => x.Hotel)
+            .Where(room => room.HotelId == id);
+
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            roomEntityQuery = roomEntityQuery.Where(x => 
+                (x.NumberRoom.ToString()).ToLower().Contains(searchTerm.ToLower())
+            );
+        }
+
+        int totalRooms = await roomEntityQuery.CountAsync();
+
+        int totalPages = (int)Math.Ceiling((double)totalRooms / PAGE_SIZE);
+
+        var roomsEntity = await roomEntityQuery
+            .OrderByDescending(x => x.NumberRoom)
+            .Skip(startIndex)
+            .Take(PAGE_SIZE)
+            .ToListAsync();
+
+        //EL MAPEO HACERLO MANUAL PORQUE SE DEBE INCLUIR CAMPO DEL NOMBRE DEL HOTEL Y DESCRIPCION
+        //HACER EL MAPEO MANUAL POR EL CASO DE LAS HABITACIONES
+        var roomsDto = roomsEntity.Select(room => new RoomDto
+        {
+            Id = room.Id,
+            NumberRoom = room.NumberRoom,
+            TypeRoom = room.TypeRoom,
+            PriceNight = room.PriceNight,
+            ImageUrl = room.ImageUrl,
+        }).ToList();
+
+        var hotelDto = new HotelDto
+        {
+            Description = hotelEntity.Description,
+            Address = hotelEntity.Address,
+            Id = hotelEntity.Id,
+            ImageUrl = hotelEntity.ImageUrl,
+            Name = hotelEntity.Name,
+            NumberPhone = hotelEntity.NumberPhone,
+            Overview = hotelEntity.Overview,
+            StarsMichelin = hotelEntity.StarsMichelin
+        };
+
+        var hotelDetail = new PaginationDto<HotelDetailDto>
+        {
+            CurrentPage = page,
+            PageSize = PAGE_SIZE,
+            TotalItems = totalRooms,
+            TotalPages = totalPages,
+            Items = new HotelDetailDto
+            {
+                Hotel = hotelDto,
+                Rooms = roomsDto
+            },
+            HasPreviousPage = page > 1,
+            HasNextPage = page < totalPages
+        };
+
+        return new ResponseDto<PaginationDto<HotelDetailDto>>
+        {
+            StatusCode = 200,
+            Status = true,
+            Message = "Registros encontrados correctamente",
+            Data = hotelDetail
+        };
+
+    }
+
 }
