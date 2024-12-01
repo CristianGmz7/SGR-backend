@@ -30,15 +30,24 @@ public class UsersService : IUsersService
     }
 
     //este metodo se usará para crear reservaciones a responsabilidad de ese usuario
-    public async Task<ResponseDto<List<BasicUserInformationResponseDto>>> GetUserListAsync()
+    public async Task<ResponseDto<List<BasicUserInformationResponseDto>>> GetUserListAsync(string searchTerm = "")
     {
         // Obtén el ID del usuario actualmente logueado
         string currentUserId = _auditService.GetUserId();
 
-        // Consulta la base de datos para obtener todos los usuarios excepto el logueado
-        var usersEntity = await _context.Users
-            .Where(u => u.Id != currentUserId) // Filtrar el usuario logueado
-            .ToListAsync();
+        //obtener todos los usuarios registrados en la base de datos
+        var userQuery = _context.Users
+            .Where(u => u.Id != currentUserId);
+
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            userQuery = userQuery
+                .Where(x => (x.FirstName + " " + x.LastName + " " + x.Id)
+                .ToLower().Contains(searchTerm.ToLower()));
+        }
+
+        var usersEntity = await userQuery.ToListAsync();
+
 
         // Mapea los usuarios a DTOs
         var users = usersEntity.Select(u => new BasicUserInformationResponseDto
@@ -66,10 +75,6 @@ public class UsersService : IUsersService
     {
         string currentUserId = _auditService.GetUserId();
 
-        //var usersEntity = await _context.Users
-        //    .Where(u => u.Id != currentUserId &&
-        //                u.UserRoles.Any(ur => _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == RolesConstant.USER)))
-        //    .ToListAsync();
         var userQuery = _context.Users
             .Where(u => u.Id != currentUserId &&
                 u.UserRoles.Any(ur => _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == RolesConstant.USER)));

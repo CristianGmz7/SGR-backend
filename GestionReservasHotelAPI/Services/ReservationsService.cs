@@ -427,7 +427,18 @@ public class ReservationsService : IReservationsService
                     //Los List IEnumerable no se colocan
                 };
 
-                reservationEntity.ClientId = _auditService.GetUserId();
+                if(dto.ClientId == "usuarioDesdeFrontend")
+                {
+                    //si el ClientId es usuarioDesdeFrontend quiere decir que un usuario esta creando su propia reservacion
+                    reservationEntity.ClientId = _auditService.GetUserId();
+                }
+                else
+                {
+                    // si el ClientId ya contiene un id real quiere decir que un admin hotel esta creando una reservacion
+                    reservationEntity.ClientId = dto.ClientId;
+                }
+
+                
 
                 // Agregar la reserva al contexto y guardar los cambios
                 _context.Reservations.Add(reservationEntity);

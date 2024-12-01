@@ -30,9 +30,9 @@ public class UsersController : ControllerBase
 
     [HttpGet("allUsers")]
     [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
-    public async Task<ActionResult<ResponseDto<List<BasicUserInformationResponseDto>>>> GetAllUsers()
+    public async Task<ActionResult<ResponseDto<List<BasicUserInformationResponseDto>>>> GetAllUsers(string searchTerm)
     {
-        var response = await _usersService.GetUserListAsync();
+        var response = await _usersService.GetUserListAsync(searchTerm);
         return StatusCode(response.StatusCode, response);
     }
 }
