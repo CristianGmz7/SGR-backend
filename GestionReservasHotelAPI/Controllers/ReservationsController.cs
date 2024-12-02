@@ -1,6 +1,9 @@
-﻿using GestionReservasHotelAPI.Dtos.Common;
+﻿using GestionReservasHotelAPI.Constants;
+using GestionReservasHotelAPI.Dtos.Common;
 using GestionReservasHotelAPI.Dtos.Reservations;
 using GestionReservasHotelAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+
 //using Microsoft.AspNetCore.Components;        //COMENTAR / ELIMINAR ESTA LIBRERIA PARA EVITAR ERROR EN LA RUTA
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +11,7 @@ namespace GestionReservasHotelAPI.Controllers;
 
 [Route("api/reservations")]
 [ApiController]
+[Authorize(AuthenticationSchemes = "Bearer")]
 
 public class ReservationsController : ControllerBase
 {
@@ -19,6 +23,7 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
     public async Task<ActionResult<ResponseDto<PaginationDto<List<ReservationDto>>>>> PaginationList(
         string clientId = "", int page = 1)
     {
@@ -33,8 +38,9 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpGet("GetBetweenDates")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
     public async Task<ActionResult<ResponseDto<PaginationDto<List<ReservationDto>>>>> PaginationListBetweenDates(
-        string clientId = "", int page = 1, 
+        string clientId = "", int page = 1,
         DateTime filterStartDate = default, DateTime filterEndDate = default)
     {
         var response = await _reservationsService.GetReservationListBetweenDates(
@@ -49,7 +55,8 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ResponseDto<ReservationDto>>> GetOneById (Guid id)
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
+    public async Task<ActionResult<ResponseDto<ReservationDto>>> GetOneById(Guid id)
     {
         var response = await _reservationsService.GetReservationByIdAsync(id);
         return StatusCode(response.StatusCode, new
@@ -60,7 +67,17 @@ public class ReservationsController : ControllerBase
         });
     }
 
+    [HttpGet("GetReservationsByHotel/{hotelId}")]
+    [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
+    public async Task<ActionResult<ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>>> GetAllByHotel(Guid hotelId, int page = 1)
+    {
+        var response = await _reservationsService.GetAllReservationsByHotel(hotelId, page);
+        return StatusCode(response.StatusCode, response);
+    }
+
+
     [HttpPost]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
     public async Task<ActionResult<ResponseDto<ReservationDto>>> Create(ReservationCreateDto dto)
     {
         var response = await _reservationsService.CreateReservationAsync(dto);
@@ -69,6 +86,7 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
     public async Task<ActionResult<ResponseDto<ReservationDto>>> Edit(ReservationEditDto dto, Guid id)
     {
         var response = await _reservationsService.EditReservationAsync(dto, id);
@@ -76,9 +94,10 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
     public async Task<ActionResult<ResponseDto<ReservationDto>>> Delete (Guid id)
     {
-        var response = await _reservationsService?.DeleteReservationAsync(id);
+        var response = await _reservationsService.DeleteReservationAsync(id);
 
         return StatusCode(response.StatusCode, response);
     }

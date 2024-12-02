@@ -32,4 +32,16 @@ public class HotelEntity : BaseEntity
 
     [Column("image_url")]
     public string ImageUrl { get; set; }
+
+    // agregado campos del propietario / administrador del hotel
+    [Column("admin_user_id")]
+    public string AdminUserId { get; set; }
+
+    [ForeignKey(nameof(AdminUserId))]
+    public UserEntity AdminUserEntity { get; set; }
+
+    //llaves foraneas auditoria
+    public virtual UserEntity CreatedByUser { get; set; }
+
+    public virtual UserEntity UpdatedByUser { get; set; }
 }

@@ -15,16 +15,22 @@ public class RoomsService : IRoomsService
 {
     private readonly GestionReservasHotelContext _context;
     private readonly IMapper _mapper;
+    private readonly IAuditService _auditService;
+    private readonly ILogger<RoomsService> _logger;
     private readonly int PAGE_SIZE;
 
     public RoomsService(
         GestionReservasHotelContext context, 
         IMapper mapper,
-        IConfiguration configuration
+        IConfiguration configuration,
+        IAuditService auditService,
+        ILogger<RoomsService> logger
         )
     {
         this._context = context;
         this._mapper = mapper;
+        this._auditService = auditService;
+        this._logger = logger;
         PAGE_SIZE = configuration.GetValue<int>("Pagination:RoomPageSize");
     }
 
@@ -233,10 +239,9 @@ public class RoomsService : IRoomsService
     }
 
     //no se coloco Includes porque al crear la habitacion se asigna con el hotel que se manda (supongo)
+    //nuevas implementaciones de users verificadas
     public async Task<ResponseDto<RoomDto>> CreateAsync(RoomCreateDto dto)
     {
-        var roomEntity = _mapper.Map<RoomEntity>(dto);
-
         var hotelEntity = await _context.Hotels.FindAsync(dto.HotelId);
 
         if (hotelEntity == null)
@@ -246,6 +251,18 @@ public class RoomsService : IRoomsService
                 StatusCode = 404,
                 Status = false,
                 Message = "El hotel no existe"
+            };
+        }
+
+        //verificar que el que quiera crear una habitacion sea el administrador del hotel de la habitacion
+        var userId = _auditService.GetUserId();
+        if(userId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<RoomDto>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede crear habitaciones"
             };
         }
 
@@ -261,6 +278,8 @@ public class RoomsService : IRoomsService
                 Message = "El numero de habitacion ya existe en este hotel"
             };
         }
+
+        var roomEntity = _mapper.Map<RoomEntity>(dto);
 
         _context.Rooms.Add(roomEntity);
         await _context.SaveChangesAsync();
@@ -292,6 +311,7 @@ public class RoomsService : IRoomsService
         };
     }
 
+    //nuevas implementaciones de users verificadas
     public async Task<ResponseDto<RoomDto>> EditAsync (RoomEditDto dto, Guid id)
     {
         var roomEntity = await _context.Rooms
@@ -305,6 +325,31 @@ public class RoomsService : IRoomsService
                 Status = false,
                 StatusCode = 404,
                 Message = "No se encontro el registro"
+            };
+        }
+
+        //hotel de la habitación que se quiera editar
+        var hotelEntity = await _context.Hotels.FindAsync(roomEntity.HotelId);
+
+        if (hotelEntity == null)
+        {
+            return new ResponseDto<RoomDto>
+            {
+                StatusCode = 404,
+                Status = false,
+                Message = "El hotel no existe"
+            };
+        }
+
+        //verificar que el que quiera editar una habitacion sea el administrador del hotel de la habitacion
+        var userId = _auditService.GetUserId();
+        if (userId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<RoomDto>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede editar sus habitaciones"
             };
         }
 
@@ -356,28 +401,199 @@ public class RoomsService : IRoomsService
 
     }
 
+    //nuevas implementaciones de users verificadas
     public async Task<ResponseDto<RoomDto>> DeleteAsync(Guid id)
     {
-        var roomEntity = await _context.Rooms.FindAsync(id);
-
-        if (roomEntity  == null)
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-            return new ResponseDto<RoomDto>
+            try
+            {
+                var roomEntity = await _context.Rooms.FindAsync(id);
+
+                if (roomEntity == null)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 404,
+                        Status = false,
+                        Message = "No se encontro el registro"
+                    };
+                }
+
+                //hotel de la habitación que se quiera eliminar
+                var hotelEntity = await _context.Hotels.FindAsync(roomEntity.HotelId);
+
+                if (hotelEntity == null)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 404,
+                        Status = false,
+                        Message = "El hotel no existe"
+                    };
+                }
+
+                //verificar que el que quiera eliminar una habitacion sea el administrador del hotel de la habitacion
+                var userId = _auditService.GetUserId();
+                if (userId != hotelEntity.AdminUserId)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 400,
+                        Status = false,
+                        Message = "Solo el administrador del hotel puede eliminar sus habitaciones"
+                    };
+                }
+
+                //verificacion que la habitacion no tenga reservaciones cuya fecha fin sea mayor a la actual
+                bool hasActiveReservations = await _context.Reservations
+                    .AnyAsync(res => res.Rooms.Any(rr => rr.RoomId == id) && res.FinishDate > DateTime.Now);
+
+                if (hasActiveReservations)
+                {
+                    return new ResponseDto<RoomDto>
+                    {
+                        StatusCode = 400,
+                        Status = false,
+                        Message = "No se puede eliminar la habitación porque tiene reservas activas"
+                    };
+                }
+
+                // Eliminar manualmente las referencias en la tabla intermedia rooms_reservations donde esta la room que quiere eliminarse
+                var roomReservations = await _context.RoomReservations
+                    .Where(rr => rr.RoomId == id)
+                    .ToListAsync();
+                _context.RoomReservations.RemoveRange(roomReservations);
+
+                //IMPORTANTE: ELIMINADA LA HABITACIÓN AL MOMENTO DE CUANDO SE MUESTRE LA LISTA DE RESERVACIONES DONDE HAYA ESTADO LA HABITACION ELIMINADA
+                //  PUEDE DAR PROBLEMAS DE CONGRUENCIA EN LOS DATOS, SE TIENE QUE PROBAR ESTE ENDPOINT A VER COMO RESPONDE EL FRONTEND ANTE LA AUSENCIA DE UNA HABITACION
+                //      PUEDE OCURRIR DE MANERA SIMILAR CUANDO SE ELIMINE UN SERVICIO ADICIONAL
+
+                //eliminar la habitacion
+                _context.Rooms.Remove(roomEntity);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return new ResponseDto<RoomDto>
+                {
+                    StatusCode = 200,
+                    Status = true,
+                    Message = "Registro borrado existosamente"
+                };
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(e, "Error al borrar la habitacion");
+
+                return new ResponseDto<RoomDto>
+                {
+                    StatusCode = 500,
+                    Status = false,
+                    Message = "Error al borrar la habitacion"
+                };
+            }
+        }
+    }
+
+    //Nuevo metodo implementando obtener todas las habitaciones sin importar las fechas, solo para dashboardHotelPage
+    public async Task<ResponseDto<PaginationDto<HotelDetailDto>>> GetRoomsByAdminHotelAsync (
+     Guid id, string searchTerm = "", int page = 1)
+    {
+        var hotelEntity = await _context.Hotels.FindAsync(id);
+
+        if (hotelEntity == null)
+        {
+            return new ResponseDto<PaginationDto<HotelDetailDto>>
             {
                 StatusCode = 404,
                 Status = false,
-                Message = "No se encontro el registro"
+                Message = "El hotel no existe"
             };
         }
 
-        _context.Rooms.Remove(roomEntity);
-        await _context.SaveChangesAsync();
+        //verificar que el que quiera crear una habitacion sea el administrador del hotel de la habitacion
+        var userId = _auditService.GetUserId();
+        if (userId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<PaginationDto<HotelDetailDto>>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede ver todas las habitaciones para su administracion"
+            };
+        }
 
-        return new ResponseDto<RoomDto>
+        int startIndex = (page - 1) * PAGE_SIZE;
+
+        var roomEntityQuery = _context.Rooms
+            .Include(x => x.Hotel)
+            .Where(room => room.HotelId == id);
+
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            roomEntityQuery = roomEntityQuery.Where(x => 
+                (x.NumberRoom.ToString()).ToLower().Contains(searchTerm.ToLower())
+            );
+        }
+
+        int totalRooms = await roomEntityQuery.CountAsync();
+
+        int totalPages = (int)Math.Ceiling((double)totalRooms / PAGE_SIZE);
+
+        var roomsEntity = await roomEntityQuery
+            .OrderByDescending(x => x.NumberRoom)
+            .Skip(startIndex)
+            .Take(PAGE_SIZE)
+            .ToListAsync();
+
+        //EL MAPEO HACERLO MANUAL PORQUE SE DEBE INCLUIR CAMPO DEL NOMBRE DEL HOTEL Y DESCRIPCION
+        //HACER EL MAPEO MANUAL POR EL CASO DE LAS HABITACIONES
+        var roomsDto = roomsEntity.Select(room => new RoomDto
+        {
+            Id = room.Id,
+            NumberRoom = room.NumberRoom,
+            TypeRoom = room.TypeRoom,
+            PriceNight = room.PriceNight,
+            ImageUrl = room.ImageUrl,
+        }).ToList();
+
+        var hotelDto = new HotelDto
+        {
+            Description = hotelEntity.Description,
+            Address = hotelEntity.Address,
+            Id = hotelEntity.Id,
+            ImageUrl = hotelEntity.ImageUrl,
+            Name = hotelEntity.Name,
+            NumberPhone = hotelEntity.NumberPhone,
+            Overview = hotelEntity.Overview,
+            StarsMichelin = hotelEntity.StarsMichelin
+        };
+
+        var hotelDetail = new PaginationDto<HotelDetailDto>
+        {
+            CurrentPage = page,
+            PageSize = PAGE_SIZE,
+            TotalItems = totalRooms,
+            TotalPages = totalPages,
+            Items = new HotelDetailDto
+            {
+                Hotel = hotelDto,
+                Rooms = roomsDto
+            },
+            HasPreviousPage = page > 1,
+            HasNextPage = page < totalPages
+        };
+
+        return new ResponseDto<PaginationDto<HotelDetailDto>>
         {
             StatusCode = 200,
             Status = true,
-            Message = "Registro borrado existosamente"
+            Message = "Registros encontrados correctamente",
+            Data = hotelDetail
         };
+
     }
+
 }

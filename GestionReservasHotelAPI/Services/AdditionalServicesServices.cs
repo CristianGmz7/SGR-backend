@@ -13,13 +13,23 @@ public class AdditionalServicesServices : IAdditionalServicesServices
 {
     private readonly GestionReservasHotelContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<AdditionalServicesServices> _logger;
+    private readonly IAuditService _auditService;
 
-    public AdditionalServicesServices(GestionReservasHotelContext context, IMapper mapper)
+    public AdditionalServicesServices(
+            GestionReservasHotelContext context, 
+            IMapper mapper,
+            ILogger<AdditionalServicesServices> logger,
+            IAuditService auditService 
+        )
     {
         this._context = context;
         this._mapper = mapper;
+        this._logger = logger;
+        this._auditService = auditService;
     }
 
+    //este servicio se coloco en el servicio que solo es permitido por rol PAGEADMIN
     public async Task<ResponseDto<List<AdditionalServiceDto>>> GetAdditionalServicesAsync()
     {
         var additionalServicesEntity = await _context.AdditionalServices.ToListAsync();
@@ -35,6 +45,7 @@ public class AdditionalServicesServices : IAdditionalServicesServices
         };
     }
 
+    // no creo que sea necesario colocarle paginación
     public async Task <ResponseDto<List<AdditionalServiceDto>>> GetAdditionalServicesOneHotelAsync(Guid id)
     {
         var hotelEntity = await _context.Hotels.FindAsync(id);
@@ -72,6 +83,7 @@ public class AdditionalServicesServices : IAdditionalServicesServices
         };
     }
 
+    // para editar servicio adicional se usaria este servicio para el frontend
     public async Task<ResponseDto<AdditionalServiceDto>> GetAdditionalServiceById(Guid id)
     {
         var additionalServiceEntity = await _context.AdditionalServices.FindAsync(id);
@@ -97,6 +109,7 @@ public class AdditionalServicesServices : IAdditionalServicesServices
         };
     }
 
+    //nuevas implementaciones de users copiadas de creacion habitaciones
     public async Task<ResponseDto<AdditionalServiceDto>> CreateAsync(AdditionalServiceCreateDto dto)
     {
         var hotelEntity = await _context.Hotels.FindAsync(dto.HotelId);
@@ -108,6 +121,18 @@ public class AdditionalServicesServices : IAdditionalServicesServices
                 StatusCode = 404,
                 Status = false,
                 Message = "El hotel no existe"
+            };
+        }
+
+        //verificar que el que quiera crear un servicio adicional sea el administrador del hotel del SA
+        var userId = _auditService.GetUserId();
+        if (userId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<AdditionalServiceDto>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede crear servicios adicionales"
             };
         }
 
@@ -142,6 +167,7 @@ public class AdditionalServicesServices : IAdditionalServicesServices
     }
 
     //AUN FALTA PROBAR ESTE SERVICIO Y AGREGARLO AL CONTROLADOR Y AL BRUNO
+    //nuevas implementaciones de users copiadas de editar habitaciones
     public async Task<ResponseDto<AdditionalServiceDto>> EditAsync(AdditionalServiceEditDto dto, Guid id)
     {
         var additionalServiceEntity = await _context.AdditionalServices.FindAsync(id);
@@ -153,6 +179,29 @@ public class AdditionalServicesServices : IAdditionalServicesServices
                 Status = false,
                 StatusCode = 404,
                 Message = "No se encontro el registro"
+            };
+        }
+
+        var hotelEntity = await _context.Hotels.FindAsync(additionalServiceEntity.HotelId);
+        if (hotelEntity == null)
+        {
+            return new ResponseDto<AdditionalServiceDto>
+            {
+                StatusCode = 404,
+                Status = false,
+                Message = "El hotel no existe"
+            };
+        }
+
+        //verificar que el que quiera editar una habitacion sea el administrador del hotel de la habitacion
+        var userId = _auditService.GetUserId();
+        if (userId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<AdditionalServiceDto>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede editar sus servicios adicionales"
             };
         }
 
@@ -189,28 +238,95 @@ public class AdditionalServicesServices : IAdditionalServicesServices
 
     }
 
+    //nuevas implementaciones de users copiadas de borrar habitaciones
     public async Task<ResponseDto<AdditionalServiceDto>> DeleteAsync(Guid id)
     {
-        var additionalServiceEntity = await _context.AdditionalServices.FindAsync(id);
-
-        if (additionalServiceEntity == null)
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-            return new ResponseDto<AdditionalServiceDto>
+            try
             {
-                StatusCode = 404,
-                Status = false,
-                Message = "No se encontro el registro"
-            };
+                var additionalServiceEntity = await _context.AdditionalServices.FindAsync(id);
+
+                if (additionalServiceEntity == null)
+                {
+                    return new ResponseDto<AdditionalServiceDto>
+                    {
+                        StatusCode = 404,
+                        Status = false,
+                        Message = "No se encontro el registro"
+                    };
+                }
+
+                //hotel del SA que se quiera eliminar
+                var hotelEntity = await _context.Hotels.FindAsync(additionalServiceEntity.HotelId);
+                if (hotelEntity == null)
+                {
+                    return new ResponseDto<AdditionalServiceDto>
+                    {
+                        StatusCode = 404,
+                        Status = false,
+                        Message = "El hotel no existe"
+                    };
+                }
+
+                var userId = _auditService.GetUserId();
+                if (userId != hotelEntity.AdminUserId)
+                {
+                    return new ResponseDto<AdditionalServiceDto>
+                    {
+                        StatusCode = 400,
+                        Status = false,
+                        Message = "Solo el administrador del hotel puede eliminar sus servicios adicionales"
+                    };
+                }
+
+                bool hasActiveReservations = await _context.Reservations
+                    .AnyAsync(res => res.AdditionalServices.Any(asr => asr.AdditionalServiceId == id) && res.FinishDate > DateTime.Now);
+
+                if (hasActiveReservations)
+                {
+                    return new ResponseDto<AdditionalServiceDto>
+                    {
+                        StatusCode = 400,
+                        Status = false,
+                        Message = "No se puede eliminar el servicio adicional porque se encuentra en reservas activas"
+                    };
+                }
+
+                var additionalServicesReservations = await _context.AdditionalServiceReservations
+                    .Where(asr => asr.AdditionalServiceId == id)
+                    .ToListAsync();
+                _context.AdditionalServiceReservations.RemoveRange(additionalServicesReservations);
+
+                //IMPORTANTE: ELIMINADA EL SERVICIO ADICIONAL AL MOMENTO DE CUANDO SE MUESTRE LA LISTA DE RESERVACIONES DONDE HAYA ESTADO EL SERVICIO ADICIONAL ELIMINADO
+                //  PUEDE DAR PROBLEMAS DE CONGRUENCIA EN LOS DATOS, SE TIENE QUE PROBAR ESTE ENDPOINT A VER COMO RESPONDE EL FRONTEND ANTE LA AUSENCIA DE UN SERVICIO ADICIONAL
+                //      PUEDE OCURRIR DE MANERA SIMILAR CUANDO SE ELIMINE UNA HABITACION
+
+                //eliminar servicio adicional
+                _context.AdditionalServices.Remove(additionalServiceEntity);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return new ResponseDto<AdditionalServiceDto>
+                {
+                    StatusCode = 200,
+                    Status = true,
+                    Message = "Registro borrado existosamente"
+                };
+            }
+            catch(Exception e)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(e, "Error al borrar el servicio adicional");
+
+                return new ResponseDto<AdditionalServiceDto>
+                {
+                    StatusCode = 500,
+                    Status = false,
+                    Message = "Error al borrar el servicio adicional"
+                };
+            }
         }
-
-        _context.AdditionalServices.Remove(additionalServiceEntity);
-        await _context.SaveChangesAsync();
-
-        return new ResponseDto<AdditionalServiceDto>
-        {
-            StatusCode = 200,
-            Status = true,
-            Message = "Registro borrado existosamente"
-        };
     }
 }

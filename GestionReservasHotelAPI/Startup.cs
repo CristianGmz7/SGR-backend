@@ -1,8 +1,13 @@
 ﻿using GestionReservasHotelAPI.Database;
+using GestionReservasHotelAPI.Database.Entities;
 using GestionReservasHotelAPI.Helpers;
 using GestionReservasHotelAPI.Services;
 using GestionReservasHotelAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace GestionReservasHotelAPI;
 
@@ -21,6 +26,8 @@ public class Startup
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        //agregar context a las peticiones http
+        services.AddHttpContextAccessor();
 
         //Add DbContext (comienza configuracion de base de datos)
         services.AddDbContext<GestionReservasHotelContext>(options =>
@@ -32,6 +39,37 @@ public class Startup
         services.AddTransient<IAdditionalServicesServices, AdditionalServicesServices>();
         services.AddTransient<IReservationsService, ReservationsService>();
         services.AddTransient<IAuthService, AuthService>();
+        services.AddTransient<IAuditService, AuditService>();
+        services.AddTransient<IUsersService, UsersService>();
+        services.AddTransient<IDashboardAdminHotelService, DashboardAdminHotelService>();
+        services.AddTransient<IDashboardAdminPageService, DashboardAdminPageService>();
+
+        //AddIdentity
+        services.AddIdentity<UserEntity, IdentityRole>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+        }).AddEntityFrameworkStores<GestionReservasHotelContext>()
+            .AddDefaultTokenProviders();
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidAudience = Configuration["JWT:ValidAudience"],
+                ValidIssuer = Configuration["JWT:ValidIssuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),    //llave 
+                ClockSkew = TimeSpan.Zero
+            };
+        });
 
         // Add AutoMapper
         services.AddAutoMapper(typeof(AutoMapperProfile));
@@ -62,6 +100,8 @@ public class Startup
 
         //aqui se agrega lo del cors
         app.UseCors("CorsPolicy");
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 

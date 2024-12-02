@@ -36,5 +36,9 @@ namespace GestionReservasHotelAPI.Dtos.Hotels
         [Display(Name = "url de la imagen")]
         [Required]
         public string ImageUrl { get; set; }
+
+        [Display(Name = "Id Administrador del hotel")]
+        [Required]
+        public string AdminUserId { get; set; }
     }
 }

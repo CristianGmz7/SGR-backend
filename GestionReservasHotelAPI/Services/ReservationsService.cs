@@ -6,6 +6,7 @@ using GestionReservasHotelAPI.Dtos.Common;
 using GestionReservasHotelAPI.Dtos.Hotels;
 using GestionReservasHotelAPI.Dtos.Reservations;
 using GestionReservasHotelAPI.Dtos.Rooms;
+using GestionReservasHotelAPI.Dtos.Users;
 using GestionReservasHotelAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -17,20 +18,23 @@ public class ReservationsService : IReservationsService
     private readonly GestionReservasHotelContext _context;
     private readonly IMapper _mapper;
     private readonly ILogger<ReservationsService> _logger;
-    private readonly IAuthService _authService;
+    private readonly IAuditService _auditService;
+    //private readonly IAuthService _authService;
     private readonly int PAGE_SIZE;
 
     public ReservationsService(GestionReservasHotelContext context, 
         IMapper mapper, 
         ILogger<ReservationsService> logger,
-        IAuthService authService,
+        //IAuthService authService,
+        IAuditService auditService,
         IConfiguration configuration
         )
     {
         this._context = context;
         this._mapper = mapper;
         this._logger = logger;
-        this._authService = authService;
+        this._auditService = auditService;
+        //this._authService = authService;
         PAGE_SIZE = configuration.GetValue<int>("Pagination:ReservationPageSize");
 
     }
@@ -42,7 +46,7 @@ public class ReservationsService : IReservationsService
         string clientId = "", int page = 1)
     {
 
-        clientId = _authService.GetUserId();        //esta de manera temporal mientras se agregan usuarios
+        clientId = _auditService.GetUserId();        // filtrar las reservaciones del que este autenticado
                                             //debe hacerse verificacion que el usuario exista
         int startIndex = (page - 1) * PAGE_SIZE;
         var reservationEntityQuery = _context.Reservations
@@ -116,6 +120,7 @@ public class ReservationsService : IReservationsService
 
     //metodo que obtiene lista de reservas por rango de fechas
     //este metodo será implementando posteriormente
+    //esto metodo creo que tocará eliminarlo
     public async Task<ResponseDto<PaginationDto<List<ReservationDto>>>> GetReservationListBetweenDates(
         string clientId = "", int page = 1, DateTime filterStartDate = default, 
         DateTime filterEndDate = default)
@@ -139,7 +144,7 @@ public class ReservationsService : IReservationsService
             };
         }
 
-        clientId = _authService.GetUserId();
+        clientId = _auditService.GetUserId();
 
         int startIndex = (page - 1) * PAGE_SIZE;
 
@@ -422,7 +427,18 @@ public class ReservationsService : IReservationsService
                     //Los List IEnumerable no se colocan
                 };
 
-                reservationEntity.ClientId = _authService.GetUserId();
+                if(dto.ClientId == "usuarioDesdeFrontend")
+                {
+                    //si el ClientId es usuarioDesdeFrontend quiere decir que un usuario esta creando su propia reservacion
+                    reservationEntity.ClientId = _auditService.GetUserId();
+                }
+                else
+                {
+                    // si el ClientId ya contiene un id real quiere decir que un admin hotel esta creando una reservacion
+                    reservationEntity.ClientId = dto.ClientId;
+                }
+
+                
 
                 // Agregar la reserva al contexto y guardar los cambios
                 _context.Reservations.Add(reservationEntity);
@@ -766,7 +782,10 @@ public class ReservationsService : IReservationsService
                 reservationEntity.StartDate = dto.StartDate;
                 reservationEntity.FinishDate = dto.FinishDate;
                 reservationEntity.Price = totalAmount;  
-                reservationEntity.ClientId = _authService.GetUserId();
+
+                //la reserva siempre pertenece al que la creo
+                //reservationEntity.ClientId = _auditService.GetUserId();
+                reservationEntity.ClientId = reservationEntity.ClientId;
 
                 _context.Reservations.Update(reservationEntity);
                 await _context.SaveChangesAsync();
@@ -874,9 +893,13 @@ public class ReservationsService : IReservationsService
         {
             try
             {
-                var reservationEntity = await _context.Reservations.FindAsync(id);
+                //var reservationEntity = await _context.Reservations.FindAsync(id);
+                var reservationEntity = await _context.Reservations
+                    .Include(r => r.Rooms)      //incluir dependencias debido a configuracion DeleteBehavior.Restrict
+                    .Include(r => r.AdditionalServices)
+                    .FirstOrDefaultAsync(r => r.Id == id);
 
-                if(reservationEntity is null)
+                if (reservationEntity is null)
                 {
                     return new ResponseDto<ReservationDto>
                     {
@@ -886,6 +909,21 @@ public class ReservationsService : IReservationsService
                     };
                 }
 
+                //eliminar las Rooms (conexion con RoomReservationEntity) antes que la entidad principal
+                // Eliminar manualmente las referencias en la tabla intermedia rooms_reservations donde esta la room que quiere eliminarse
+                //var roomReservations = await _context.RoomReservations
+                //    .Where(rr => rr.RoomId == id)
+                //    .ToListAsync();
+                //_context.RoomReservations.RemoveRange(roomReservations);
+                _context.RoomReservations.RemoveRange(reservationEntity.Rooms);
+
+                //var additionalServicesReservations = await _context.AdditionalServiceReservations
+                //    .Where(asr => asr.AdditionalServiceId == id)
+                //    .ToListAsync();
+                //_context.AdditionalServiceReservations.RemoveRange(additionalServicesReservations);
+                _context.AdditionalServiceReservations.RemoveRange(reservationEntity.AdditionalServices);
+
+                //eliminar reservacion
                 _context.Reservations.Remove(reservationEntity);
                 await _context.SaveChangesAsync();
 
@@ -914,4 +952,99 @@ public class ReservationsService : IReservationsService
         }
     }
 
+    public async Task<ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>> GetAllReservationsByHotel (Guid hotelId, int page = 1)
+    {
+        var hotelEntity = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == hotelId);
+        if (hotelEntity == null)
+        {
+            return new ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>
+            {
+                StatusCode = 404,
+                Status = false,
+                Message = "No se encontró el registro."
+            };
+        }
+
+        var hotelAdminId = _auditService.GetUserId();
+        if (hotelAdminId != hotelEntity.AdminUserId)
+        {
+            return new ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Solo el administrador del hotel puede obtener todas sus reservaciones."
+            };
+        }
+
+        int startIndex = (page - 1) * PAGE_SIZE;
+
+        var reservationQuery = _context.Reservations
+            .Include(r => r.Rooms)
+                .ThenInclude(rr => rr.Room)
+            .Include(r => r.AdditionalServices)
+                .ThenInclude(asr => asr.AdditionalService)
+            .Include(r => r.ClientEntity)
+            .Where(r => r.Rooms.Any(rr => rr.Room.HotelId == hotelId));
+
+        int totalReservations = await reservationQuery.CountAsync();
+        int totalPages = (int)Math.Ceiling((double)totalReservations / PAGE_SIZE);
+
+        var reservations = await reservationQuery
+            .OrderByDescending(r => r.FinishDate)
+            .Skip(startIndex)
+            .Take(PAGE_SIZE)
+            .ToListAsync();
+
+        var reservationDtos = reservations.Select(reservation => new ReservationAdminHotelResponseDto
+        {
+            Id = reservation.Id,
+            StartDate = reservation.StartDate,
+            FinishDate = reservation.FinishDate,
+            Condition = DateTime.Now < reservation.FinishDate ? "CONFIRMADA" : "COMPLETADA",
+            Price = reservation.Price,
+            Client = new BasicUserInformationResponseDto
+            {
+                Id = reservation.ClientEntity.Id,
+                FullName = reservation.ClientEntity.FirstName + reservation.ClientEntity.LastName,
+                Email = reservation.ClientEntity.Email,
+                ProfilePictureUrl = reservation.ClientEntity.ProfilePictureUrl
+            },
+            RoomsInfoList = reservation.Rooms.Select(rR => new RoomDto
+            {
+                Id = rR.Room.Id,
+                NumberRoom = rR.Room.NumberRoom,
+                TypeRoom = rR.Room.TypeRoom,
+                PriceNight = rR.PriceNight,
+                ImageUrl = rR.Room.ImageUrl,
+                HotelInfo = new HotelDto
+                {
+                    Id = rR.Room.Hotel.Id,
+                    Name = rR.Room.Hotel.Name
+                }
+            }).ToList(),
+            AdditionalServicesInfoList = reservation.AdditionalServices.Select(aS => new AdditionalServiceDto
+            {
+                Id = aS.AdditionalService.Id,
+                Name = aS.AdditionalService.Name,
+                Price = aS.Price
+            }).ToList()
+        }).ToList();
+
+        return new ResponseDto<PaginationDto<List<ReservationAdminHotelResponseDto>>>
+        {
+            StatusCode = 200,
+            Status = true,
+            Message = "Reservas encontradas exitosamente",
+            Data = new PaginationDto<List<ReservationAdminHotelResponseDto>>
+            {
+                CurrentPage = page,
+                PageSize = PAGE_SIZE,
+                TotalItems = totalReservations,
+                TotalPages = totalPages,
+                Items = reservationDtos,
+                HasPreviousPage = page > 1,
+                HasNextPage = page < totalPages
+            }
+        };
+    }
 }

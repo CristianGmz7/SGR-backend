@@ -24,4 +24,9 @@ public class RoomReservationEntity : BaseEntity
     [Range(1, double.MaxValue)]
     [Column("price_night")]
     public double PriceNight { get; set; }
+
+    //llaves foraneas auditoria
+    public virtual UserEntity CreatedByUser { get; set; }
+
+    public virtual UserEntity UpdatedByUser { get; set; }
 }

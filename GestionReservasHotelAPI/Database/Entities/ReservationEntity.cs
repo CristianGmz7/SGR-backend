@@ -16,11 +16,18 @@ public class ReservationEntity : BaseEntity
     [Column("price")]
     public double Price { get; set; }
 
-    // TODO: definir la relacion entre usuario y reservacion
     [Column("client_id")]
     public string ClientId { get; set; }
+
+    [ForeignKey(nameof(ClientId))]
+    public UserEntity ClientEntity { get; set; }
 
     public virtual IEnumerable<RoomReservationEntity> Rooms { get; set; }
 
     public virtual IEnumerable<AdditionalServiceReservationEntity> AdditionalServices { get; set; }
+
+    //llaves foraneas auditoria
+    public virtual UserEntity CreatedByUser { get; set; }
+
+    public virtual UserEntity UpdatedByUser { get; set; }
 }
