@@ -35,4 +35,28 @@ public class UsersController : ControllerBase
         var response = await _usersService.GetUserListAsync(searchTerm);
         return StatusCode(response.StatusCode, response);
     }
+
+    [HttpGet("userLogged")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
+    public async Task<ActionResult<ResponseDto<UserLoggedResponseDto>>> GetUserLogged()
+    {
+        var response = await _usersService.GetUserInfoLoggedAsync();
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpPut("editUserInfo")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
+    public async Task<ActionResult<ResponseDto<BasicUserInformationResponseDto>>> EditUserInfo (UserEditDto dto)
+    {
+        var response = await _usersService.EditUserAsync(dto);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpGet("confirmPasswordUserToEdit")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.HOTELADMIN}, {RolesConstant.USER}")]
+    public async Task<ActionResult<ResponseDto<BasicUserInformationResponseDto>>> ConfirmPasswordUserToEdit (string password)
+    {
+        var response = await _usersService.ConfirmPasswordUserToEditAsync(password);
+        return StatusCode(response.StatusCode, response);
+    }
 }

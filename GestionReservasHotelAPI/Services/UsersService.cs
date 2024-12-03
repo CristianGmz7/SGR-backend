@@ -104,4 +104,227 @@ public class UsersService : IUsersService
             Data = usersDto
         };
     }
+
+
+    //metodo para obtener data publica de un usuario cuando quiera cambiar sus datos
+    public async Task<ResponseDto<UserLoggedResponseDto>> GetUserInfoLoggedAsync ()
+    {
+        string currentUserId = _auditService.GetUserId();
+        var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == currentUserId);
+
+        if (userEntity is null)
+        {
+            return new ResponseDto<UserLoggedResponseDto>
+            {
+                StatusCode = 404,
+                Status = false,
+                Message = "El usuario no existe"
+            };
+        }
+
+        var userDto = new UserLoggedResponseDto
+        {
+            FirstName = userEntity.FirstName,
+            LastName = userEntity.LastName,
+            ProfilePictureUrl= userEntity.ProfilePictureUrl
+        };
+
+
+        return new ResponseDto<UserLoggedResponseDto>
+        {
+            StatusCode = 200,
+            Status = true,
+            Message = "Informacion usuario logueado cargada correctamente",
+            Data = userDto
+        };
+    }
+
+    //falta que probar en bruno con rollback, tiene que copiarse info del jwtio asi como campos de passwordhashed para verificar cambios de antes y despues
+    //cambiar datos, quitar token y volver a generarlo para verificar campos del token
+    //EN EL FRONTEND despues de ejecutar este metodo se cerrará sesion
+    public async Task<ResponseDto<BasicUserInformationResponseDto>> EditUserAsync(UserEditDto dto)
+    {
+        using (var transaction = await _context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                string currentUserId = _auditService.GetUserId();
+                var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == currentUserId);
+
+                if (userEntity is null)
+                {
+                    return new ResponseDto<BasicUserInformationResponseDto>
+                    {
+                        StatusCode = 404,
+                        Status = false,
+                        Message = "El usuario no existe"
+                    };
+                }
+
+                if (!string.IsNullOrWhiteSpace(dto.FirstName))
+                {
+                    userEntity.FirstName = dto.FirstName;
+                }
+                if (!string.IsNullOrWhiteSpace(dto.LastName))
+                {
+                    userEntity.LastName = dto.LastName;
+                }
+                if (!string.IsNullOrWhiteSpace(dto.ProfilePictureUrl))
+                {
+                    userEntity.ProfilePictureUrl = dto.ProfilePictureUrl;
+                }
+
+                //verificar que el correo electronico no se repita 
+                if (!string.IsNullOrWhiteSpace(dto.NewEmail) && userEntity.Email != dto.NewEmail)  {
+
+                    //verificar que el correo antiguo sea el verdadero del usuario
+                    if(dto.OldEmail != userEntity.Email)
+                    {
+                        return new ResponseDto<BasicUserInformationResponseDto>
+                        {
+                            Status = false,
+                            StatusCode = 400,
+                            Message = "El correo actual ingresado no es el correcto"
+                        };
+                    }
+
+                    //verificar si el nuevo correo ya existe
+                    var emailExists = await _userManager.FindByEmailAsync(dto.NewEmail);
+                    if(emailExists != null)
+                    {
+                        return new ResponseDto<BasicUserInformationResponseDto>
+                        {
+                            StatusCode = 400,
+                            Status = false,
+                            Message = "El correo nuevo ingresado ya está en uso"
+                        };
+                    }
+                    //si no esta en uso cambiar el username y email
+                    userEntity.Email = dto.NewEmail;
+                    userEntity.UserName = dto.NewEmail;
+                }
+
+                //verificar que la contraseña sea la misma antes de hacer el mapeo
+                if(!string.IsNullOrWhiteSpace(dto.NewPassword) && !string.IsNullOrWhiteSpace(dto.OldPassword))
+                {
+                    var passwordCheck = await _userManager.CheckPasswordAsync(userEntity, dto.OldPassword);
+                    if (!passwordCheck)
+                    {
+                        return new ResponseDto<BasicUserInformationResponseDto>
+                        {
+                            StatusCode = 400,
+                            Status = false,
+                            Message = "La contraseña actual es incorrecta"
+                        };
+                    }
+
+                    var changePasswordResult = await _userManager.ChangePasswordAsync(userEntity, dto.OldPassword, dto.NewPassword);
+                    if (!changePasswordResult.Succeeded)
+                    {
+                        return new ResponseDto<BasicUserInformationResponseDto>
+                        {
+                            StatusCode = 400,
+                            Status = false,
+                            Message = "No se pudo actualizar la contraseña",
+                        };
+                    }
+
+
+                }
+
+                var result = await _userManager.UpdateAsync(userEntity);
+                if (!result.Succeeded)
+                {
+                    return new ResponseDto<BasicUserInformationResponseDto>
+                    {
+                        StatusCode = 500,
+                        Status = false,
+                        Message = "No se pudo actualizar la informacion del usuario"
+                    };
+                }
+
+                //probar rollback
+                //throw new Exception("Error para probar el rollback");
+                await transaction.CommitAsync();
+
+                var userDto = new BasicUserInformationResponseDto
+                {
+                    Id = userEntity.Id,
+                    FullName = userEntity.FirstName + " " + userEntity.LastName,
+                    Email = userEntity.Email,
+                    ProfilePictureUrl = userEntity.ProfilePictureUrl,
+                };
+
+                return new ResponseDto<BasicUserInformationResponseDto>
+                {
+                    Status = true,
+                    StatusCode = 200,
+                    Message = "Informacion actualizada correctamete",
+                    Data = userDto
+                };
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(e, "Se produjo un error al editar el usuario.");
+                return new ResponseDto<BasicUserInformationResponseDto>
+                {
+                    StatusCode = 500,
+                    Status = false,
+                    Message = "Se produjo un error al editar el usuario."
+                };
+            }
+        }
+    }
+
+    //crear metodo que retorne un booleano, en el que se reciba la contraseña y se verifique que es la contraseña correcta, esto será implementando cuando se quiera cambiar contraseña o correo electronico
+    public async Task<ResponseDto<bool>> ConfirmPasswordUserToEditAsync (string password)
+    {
+
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            return new ResponseDto<bool>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "Debe ingresar una contraseña",
+                Data = false
+            };
+        }
+
+        string currentUserId = _auditService.GetUserId();
+        var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == currentUserId);
+
+        if (userEntity is null)
+        {
+            return new ResponseDto<bool>
+            {
+                StatusCode = 404,
+                Status = false,
+                Message = "El usuario no existe",
+                Data = false
+            };
+        }
+
+        var passwordCheck = await _userManager.CheckPasswordAsync(userEntity, password);
+        if (!passwordCheck)
+        {
+            return new ResponseDto<bool>
+            {
+                StatusCode = 400,
+                Status = false,
+                Message = "La contraseña es incorrecta",
+                Data = false
+            };
+        }
+
+
+        return new ResponseDto<bool>
+        {
+            Status = true,
+            StatusCode = 200,
+            Message = "La contraseña es valida",
+            Data = true
+        };
+    }
 }
