@@ -20,7 +20,7 @@ public class ReservationEntity : BaseEntity
     public string ClientId { get; set; }
 
     [ForeignKey(nameof(ClientId))]
-    public UserEntity ClientEntity { get; set; }
+    public virtual UserEntity ClientEntity { get; set; }
 
     public virtual IEnumerable<RoomReservationEntity> Rooms { get; set; }
 

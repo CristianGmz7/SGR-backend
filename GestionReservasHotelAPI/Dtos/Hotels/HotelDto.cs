@@ -21,5 +21,10 @@ namespace GestionReservasHotelAPI.Dtos.Hotels
         public string ImageUrl { get; set; }
 
         public string AdminUserId { get; set; }
+
+        public int TotalLikes { get; set; }
+
+        public int TotalDislikes { get; set; }
+
     }
 }

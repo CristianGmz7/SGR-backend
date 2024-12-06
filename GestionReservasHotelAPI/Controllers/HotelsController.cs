@@ -22,9 +22,9 @@ public class HotelsController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     public async Task<ActionResult<ResponseDto<PaginationDto<List<HotelDto>>>>> GetAll(
-        string searchTerm, int page = 1)
+        string searchTerm, int page = 1, int starsNumber = 0, string department = "", string city = "", int minLikes = -1, int maxLikes = -1)
     {
-        var response = await _hotelsService.GetHotelsListAsync(searchTerm, page);
+        var response = await _hotelsService.GetHotelsListAsync(searchTerm, page, starsNumber, department, city, minLikes, maxLikes);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -62,6 +62,16 @@ public class HotelsController : ControllerBase
     {
         var response = await _hotelsService.DeleteAsync(id);
 
+        return StatusCode(response.StatusCode, response);
+    }
+
+    //HttpGet que aun queda para los hotelAdmin
+    [HttpGet("getAllByAdminPage")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}")]
+    public async Task<ActionResult<ResponseDto<PaginationDto<List<HotelDto>>>>> GetAllByAdminPage(
+    string searchTerm, int page = 1)
+    {
+        var response = await _hotelsService.GetHotelsListForAdminPageAsync(searchTerm, page);
         return StatusCode(response.StatusCode, response);
     }
 }

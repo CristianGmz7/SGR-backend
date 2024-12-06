@@ -40,6 +40,13 @@ public class HotelEntity : BaseEntity
     [ForeignKey(nameof(AdminUserId))]
     public UserEntity AdminUserEntity { get; set; }
 
+    //agregado campos de region
+    [Column("department")]
+    public string Department { get; set; }
+
+    [Column("city")]
+    public string City { get; set; }
+
     //llaves foraneas auditoria
     public virtual UserEntity CreatedByUser { get; set; }
 

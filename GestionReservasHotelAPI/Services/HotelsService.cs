@@ -39,7 +39,13 @@ public class HotelsService : IHotelsService
 
     public async Task<ResponseDto<PaginationDto<List<HotelDto>>>> GetHotelsListAsync(
         string searchTerm = "",
-        int page = 1)
+        int page = 1,
+        int starsNumber = 0,
+        string department = "",
+        string city = "",
+        int minLikes = -1,
+        int maxLikes = -1
+        )
     {
         int startIndex = (page - 1) * PAGE_SIZE;
 
@@ -54,17 +60,71 @@ public class HotelsService : IHotelsService
                 .ToLower().Contains(searchTerm.ToLower()));
         }
 
-        int totalHotels = await hotelEntityQuery.CountAsync();
+        //aqui van todas las validaciones de los filtros
+        //filtrar los hoteles por los numeros de estrellas que existan en el query
+        if (starsNumber != 0) { 
+            hotelEntityQuery = hotelEntityQuery.Where(x => x.StarsMichelin == starsNumber); 
+        }
+        //filtrar los hoteles por departamento
+        if (!string.IsNullOrEmpty(department))
+        {
+            hotelEntityQuery = hotelEntityQuery.Where(x => x.Department == department);
+        }
+        //filtrar los hoteles por ciudad
+        if (!string.IsNullOrEmpty(city))
+        {
+            hotelEntityQuery = hotelEntityQuery.Where(x => x.City == city);
+        }
+
+        // Unir con las reacciones para calcular likes y dislikes
+        var hotelWithReactsQuery = hotelEntityQuery
+            .GroupJoin(
+                _context.HotelsReacts,
+                hotel => hotel.Id,
+                react => react.HotelId,
+                (hotel, reacts) => new
+                {
+                    Hotel = hotel,
+                    TotalLikes = reacts.Count(r => r.Reaction),      // Total de likes
+                    TotalDislikes = reacts.Count(r => !r.Reaction)   // Total de dislikes
+                }
+            );
+
+        //filtrar por cantidad de likes
+        if (minLikes != -1 && maxLikes != -1)
+        {
+            hotelWithReactsQuery = hotelWithReactsQuery
+                .Where(x =>
+                    (maxLikes == -2000 && x.TotalLikes >= 2001) ||  // Más de 2000 likes
+                    (x.TotalLikes >= minLikes && x.TotalLikes <= maxLikes) // Rango definido
+                );
+        }
+
+        int totalHotels = await hotelWithReactsQuery.CountAsync();
         int totalPages = (int)Math.Ceiling((double)totalHotels / PAGE_SIZE);
 
         // Paginación y ordenamiento
-        var hotelsEntity = await hotelEntityQuery
-            .OrderBy(x => x.Name)
+        var hotelsEntity = await hotelWithReactsQuery
+            .OrderBy(x => x.Hotel.Name)             //aqui ya se podria ir ordenando por likes por ejemplo
             .Skip(startIndex)
             .Take(PAGE_SIZE)
             .ToListAsync();
 
-        var hotelsDtos = _mapper.Map<List<HotelDto>>(hotelsEntity);
+        //var hotelsDtos = _mapper.Map<List<HotelDto>>(hotelsEntity);
+        var hotelsDtos = hotelsEntity.Select(x => new HotelDto
+        {
+            Id = x.Hotel.Id,
+            Name = x.Hotel.Name,
+            Address = $"{x.Hotel.Address}, {x.Hotel.City}, {x.Hotel.Department}",
+            StarsMichelin = x.Hotel.StarsMichelin,
+            NumberPhone = x.Hotel.NumberPhone,
+            Overview = x.Hotel.Overview,
+            Description = x.Hotel.Description,
+            ImageUrl = x.Hotel.ImageUrl,
+            AdminUserId = x.Hotel.AdminUserId,
+            TotalLikes = x.TotalLikes,
+            TotalDislikes = x.TotalDislikes
+        }).ToList();
 
         return new ResponseDto<PaginationDto<List<HotelDto>>>
         {
@@ -389,4 +449,50 @@ public class HotelsService : IHotelsService
         }
     }
 
+    public async Task<ResponseDto<PaginationDto<List<HotelDto>>>> GetHotelsListForAdminPageAsync(
+        string searchTerm = "", 
+        int page = 1)
+    {
+        int startIndex = (page - 1) * PAGE_SIZE;
+
+        // Filtro base que incluye todos los hoteles
+        var hotelEntityQuery = _context.Hotels.AsQueryable();
+
+        // Si searchTerm no está vacío, se agrega el filtro
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            hotelEntityQuery = hotelEntityQuery.Where(x =>
+                (x.Name + " " + x.Description + " " + x.Overview + " " + x.Address)
+                .ToLower().Contains(searchTerm.ToLower()));
+        }
+
+        int totalHotels = await hotelEntityQuery.CountAsync();
+        int totalPages = (int)Math.Ceiling((double)totalHotels / PAGE_SIZE);
+
+        // Paginación y ordenamiento
+        var hotelsEntity = await hotelEntityQuery
+            .OrderBy(x => x.Name)
+            .Skip(startIndex)
+            .Take(PAGE_SIZE)
+            .ToListAsync();
+
+        var hotelsDtos = _mapper.Map<List<HotelDto>>(hotelsEntity);
+
+        return new ResponseDto<PaginationDto<List<HotelDto>>>
+        {
+            StatusCode = 200,
+            Status = true,
+            Message = "Lista de registro obtenida correctamente.",
+            Data = new PaginationDto<List<HotelDto>>
+            {
+                CurrentPage = page,
+                PageSize = PAGE_SIZE,
+                TotalItems = totalHotels,
+                TotalPages = totalPages,
+                Items = hotelsDtos,
+                HasPreviousPage = page > 1,
+                HasNextPage = page < totalPages,
+            }
+        };
+    }
 }

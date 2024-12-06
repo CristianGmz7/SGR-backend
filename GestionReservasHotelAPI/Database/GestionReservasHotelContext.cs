@@ -58,6 +58,7 @@ public class GestionReservasHotelContext : IdentityDbContext<UserEntity>
         modelBuilder.ApplyConfiguration(new AdditionalServiceConfiguration());
         modelBuilder.ApplyConfiguration(new AdditionalServiceReservationConfiguration());
         modelBuilder.ApplyConfiguration(new RoomReservationConfiguration());
+        modelBuilder.ApplyConfiguration(new HotelReactConfiguration());
 
         // Probar a dejar solo las del esquema DBO con .Cascade y las de security con .Restrict si da problemas el querer eliminar
         // reservas, editar reservas
@@ -113,4 +114,5 @@ public class GestionReservasHotelContext : IdentityDbContext<UserEntity>
     public DbSet<AdditionalServiceEntity> AdditionalServices { get; set; }
     public DbSet<AdditionalServiceReservationEntity> AdditionalServiceReservations { get; set; }
     public DbSet<RoomReservationEntity> RoomReservations { get; set; }
+    public DbSet<HotelReactEntity> HotelsReacts { get; set; }
 }

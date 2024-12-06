@@ -40,5 +40,13 @@ namespace GestionReservasHotelAPI.Dtos.Hotels
         [Display(Name = "Id Administrador del hotel")]
         [Required]
         public string AdminUserId { get; set; }
+
+        [Display(Name = "Departamento")]
+        [Required]
+        public string Department { get; set; }
+
+        [Display(Name = "Ciudad")]
+        [Required]
+        public string City { get; set; }
     }
 }
