@@ -158,7 +158,23 @@ public class HotelsService : IHotelsService
             };
         }
 
+        // Calcula las reacciones asociadas al hotel
+        var reactions = await _context.HotelsReacts
+            .Where(r => r.HotelId == id)
+            .GroupBy(r => r.Reaction)
+            .Select(group => new
+            {
+                Reaction = group.Key, // true = likes, false = dislikes
+                Count = group.Count()
+            })
+            .ToListAsync();
+
+        int totalLikes = reactions.FirstOrDefault(r => r.Reaction)?.Count ?? 0;
+        int totalDislikes = reactions.FirstOrDefault(r => !r.Reaction)?.Count ?? 0;
+
         var hotelDto = _mapper.Map<HotelDto>(hotelEntity);
+        hotelDto.TotalDislikes = totalDislikes;
+        hotelDto.TotalLikes = totalLikes;
 
         return new ResponseDto<HotelDto>
         {

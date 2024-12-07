@@ -43,6 +43,7 @@ public class Startup
         services.AddTransient<IUsersService, UsersService>();
         services.AddTransient<IDashboardAdminHotelService, DashboardAdminHotelService>();
         services.AddTransient<IDashboardAdminPageService, DashboardAdminPageService>();
+        services.AddTransient<IHotelsReactsService, HotelsReactsService>();
 
         //AddIdentity
         services.AddIdentity<UserEntity, IdentityRole>(options =>
