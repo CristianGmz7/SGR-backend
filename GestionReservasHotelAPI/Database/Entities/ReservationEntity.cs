@@ -19,6 +19,12 @@ public class ReservationEntity : BaseEntity
     [Column("client_id")]
     public string ClientId { get; set; }
 
+    [Column("order_id")]
+    public string OrderId { get; set; }
+    
+    [Column("capture_id")]
+    public string CaptureId { get; set; }
+
     [ForeignKey(nameof(ClientId))]
     public virtual UserEntity ClientEntity { get; set; }
 

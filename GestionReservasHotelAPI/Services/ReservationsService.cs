@@ -9,6 +9,11 @@ using GestionReservasHotelAPI.Dtos.Rooms;
 using GestionReservasHotelAPI.Dtos.Users;
 using GestionReservasHotelAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using PayPalCheckoutSdk.Core;
+using PayPalCheckoutSdk.Orders;
+using PayPalCheckoutSdk.Payments;
+using System.Net.Http.Json;
 using System.Linq;
 
 namespace GestionReservasHotelAPI.Services;
@@ -21,6 +26,10 @@ public class ReservationsService : IReservationsService
     private readonly IAuditService _auditService;
     //private readonly IAuthService _authService;
     private readonly int PAGE_SIZE;
+    private readonly string CLIENTID;
+    private readonly string SECRET;
+    private readonly PayPalEnvironment _environment;
+    private readonly PayPalHttpClient _client;
 
     public ReservationsService(GestionReservasHotelContext context, 
         IMapper mapper, 
@@ -36,7 +45,10 @@ public class ReservationsService : IReservationsService
         this._auditService = auditService;
         //this._authService = authService;
         PAGE_SIZE = configuration.GetValue<int>("Pagination:ReservationPageSize");
-
+        CLIENTID = configuration.GetValue<string>("PayPal:ClientId");
+        SECRET = configuration.GetValue<string>("PayPal:Secret");
+        _environment = new SandboxEnvironment(CLIENTID, SECRET);
+        _client = new PayPalHttpClient(_environment);
     }
 
     //supongo que se necesita string de id de cliente
@@ -75,6 +87,8 @@ public class ReservationsService : IReservationsService
             Condition = DateTime.Now < reservation.FinishDate ? "CONFIRMADA" : "COMPLETADA",
             Price = reservation.Price,
             ClientId = clientId,            //considerar si requiere porque ya se sabe que es del usuario
+            OrderId = reservation.OrderId,
+            CaptureId = reservation.CaptureId,
             
             RoomsInfoList = reservation.Rooms.Select(rR => new RoomDto
             {
@@ -252,6 +266,8 @@ public class ReservationsService : IReservationsService
             Condition = DateTime.Now < reservationEntity.FinishDate ? "CONFIRMADA" : "COMPLETADA",
             Price = reservationEntity.Price,
             ClientId = reservationEntity.ClientId,
+            OrderId = reservationEntity.OrderId,
+            CaptureId = reservationEntity.CaptureId,
 
             RoomsInfoList = reservationEntity.Rooms.Select(rR => new RoomDto
             {
@@ -283,6 +299,7 @@ public class ReservationsService : IReservationsService
         };
     }
 
+    //Solo se guardan datos de transferencia cuando el usuario crea reserva cuando el admin crea no se guarda 
     public async Task<ResponseDto<ReservationDto>> CreateReservationAsync (ReservationCreateDto dto)
     {
         using(var transaction = await _context.Database.BeginTransactionAsync())
@@ -431,14 +448,15 @@ public class ReservationsService : IReservationsService
                 {
                     //si el ClientId es usuarioDesdeFrontend quiere decir que un usuario esta creando su propia reservacion
                     reservationEntity.ClientId = _auditService.GetUserId();
+                    reservationEntity.OrderId = dto.OrderId;
+                    reservationEntity.CaptureId = dto.CaptureId;
                 }
                 else
                 {
                     // si el ClientId ya contiene un id real quiere decir que un admin hotel esta creando una reservacion
+                    //no se manda captureId ni OrderId de paga porque a este punto tuvo que haber un acuerdo entre el client y el admin
                     reservationEntity.ClientId = dto.ClientId;
                 }
-
-                
 
                 // Agregar la reserva al contexto y guardar los cambios
                 _context.Reservations.Add(reservationEntity);
@@ -559,6 +577,9 @@ public class ReservationsService : IReservationsService
         }   //fin de using
     }   //fin de metodo CreateReservationAsync
 
+    //Implementar servicio de reemboloso de PayPalService
+    //Antes de ejecutar reembolso: validar que existe captureid y orderid de la reserva, si no existe no hacer logica de reembolso
+    //Si el usuario logueado es diferente a la reserva (es decir el admin) quiere editar reserva
     public async Task<ResponseDto<ReservationDto>> EditReservationAsync (ReservationEditDto dto, Guid id)
     {
         using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -777,6 +798,40 @@ public class ReservationsService : IReservationsService
                 double roomsTotal = reservationDays * roomsEntity.Sum(r => r.PriceNight);
                 double totalAmount = roomsTotal + additionalServicesTotal;
 
+                string refundMessageForDto = "";
+                //antes de modificar los datos de reserva hace reembolso, solo hacer reembolso si el que esta editando es cliente
+                //debido a que si se hace reembolso siendo admin no se actualiza el valor del nuevo captureid y orderid
+                if((reservationEntity.CaptureId != null && reservationEntity.OrderId != null) && reservationEntity.ClientId == _auditService.GetUserId())
+                {
+                    try
+                    {
+                        var refundRequest = new CapturesRefundRequest(reservationEntity.CaptureId);
+                        refundRequest.RequestBody(new RefundRequest
+                        {
+                            NoteToPayer = "Reembolso por edición de reserva"
+                        });
+                        var response = await _client.Execute(refundRequest);
+                        if ((int)response.StatusCode == 201)
+                        {
+                            refundMessageForDto = "Reembolso de reserva original fue completado";
+                        }
+                        else
+                        {
+                            refundMessageForDto = "Reembolso de reserva original no fue completado";
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseDto<ReservationDto>
+                        {
+                            Message = $"Error al procesar el reembolso de reserva original: {e.Message}",
+                            StatusCode = 500,
+                            Status = false
+                        };
+                    }
+
+                }
+
                 //actualizar los datos de la reserva
 
                 reservationEntity.StartDate = dto.StartDate;
@@ -786,6 +841,14 @@ public class ReservationsService : IReservationsService
                 //la reserva siempre pertenece al que la creo
                 //reservationEntity.ClientId = _auditService.GetUserId();
                 reservationEntity.ClientId = reservationEntity.ClientId;
+
+                //si esto coincide esto quiere decir que el cliente edito su reserva y volvió a realizar el pago (se le devolvió cantidad original)
+                //si el admin esta editando no entraria aqui
+                if (reservationEntity.ClientId == _auditService.GetUserId())
+                {
+                    reservationEntity.CaptureId = dto.CaptureId;
+                    reservationEntity.OrderId = dto.OrderId;
+                }
 
                 _context.Reservations.Update(reservationEntity);
                 await _context.SaveChangesAsync();
@@ -866,7 +929,7 @@ public class ReservationsService : IReservationsService
                 {
                     StatusCode = 200,
                     Status = true,
-                    Message = "Reservacion editada correctamente",
+                    Message = "Reservacion editada correctamente" + (refundMessageForDto != "" ? " y " + refundMessageForDto : ""),
                     Data = reservationDto
                 };
 
@@ -887,6 +950,7 @@ public class ReservationsService : IReservationsService
         }   //fin del using
     }   //fin de metodo EditReservationAsync
 
+    //Implementar servicio de reemboloso de PayPalService
     public async Task<ResponseDto<ReservationDto>> DeleteReservationAsync(Guid id)
     {
         using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -908,6 +972,39 @@ public class ReservationsService : IReservationsService
                         Message = "La reservacion no existe"
                     };
                 }
+
+                string refundMessageForDto = "";
+                if (reservationEntity.CaptureId != null && reservationEntity.OrderId != null)
+                {
+                    try
+                    {
+                        var refundRequest = new CapturesRefundRequest(reservationEntity.CaptureId);
+                        refundRequest.RequestBody(new RefundRequest
+                        {
+                            NoteToPayer = "Reembolso por eliminación de reserva"
+                        });
+                        var response = await _client.Execute(refundRequest);
+                        if ((int)response.StatusCode == 201)
+                        {
+                            refundMessageForDto = "Reembolso de reserva fue completado";
+                        }
+                        else
+                        {
+                            refundMessageForDto = "Reembolso de reserva no fue completado";
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        return new ResponseDto<ReservationDto>
+                        {
+                            Message = $"Error al procesar el reembolso de reserva original: {e.Message}",
+                            StatusCode = 500,
+                            Status = false
+                        };
+                    }
+
+                }
+
 
                 //eliminar las Rooms (conexion con RoomReservationEntity) antes que la entidad principal
                 // Eliminar manualmente las referencias en la tabla intermedia rooms_reservations donde esta la room que quiere eliminarse
@@ -933,7 +1030,7 @@ public class ReservationsService : IReservationsService
                 {
                     StatusCode = 200,
                     Status = true,
-                    Message = "Reservacion eliminada correctamente"
+                    Message = "Reservacion eliminada correctamente" + (refundMessageForDto != "" ? " y " + refundMessageForDto : ""),
                 };
 
             }
@@ -1002,6 +1099,8 @@ public class ReservationsService : IReservationsService
             FinishDate = reservation.FinishDate,
             Condition = DateTime.Now < reservation.FinishDate ? "CONFIRMADA" : "COMPLETADA",
             Price = reservation.Price,
+            OrderId = reservation.OrderId,
+            CaptureId = reservation.CaptureId,
             Client = new BasicUserInformationResponseDto
             {
                 Id = reservation.ClientEntity.Id,

@@ -17,6 +17,10 @@ public class ReservationAdminHotelResponseDto
     public double Price { get; set; }
     public BasicUserInformationResponseDto Client { get; set; }
 
+    //añadido por los metodos de pago del paypal (cuando se quiera hacer reembolsos)
+    public string OrderId { get; set; }
+    public string CaptureId { get; set; }
+
     public List<RoomDto> RoomsInfoList { get; set; }
 
     public List<AdditionalServiceDto> AdditionalServicesInfoList { get; set; }
