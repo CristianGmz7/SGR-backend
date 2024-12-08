@@ -438,6 +438,12 @@ public class HotelsService : IHotelsService
                     .ToListAsync();
                 _context.AdditionalServices.RemoveRange(hotelAdditionalServices);
 
+                //5. Eliminar reacciones asociadas al hotel
+                var hotelReacts = await _context.HotelsReacts
+                    .Where(hr => hr.HotelId == id)
+                    .ToListAsync();
+                _context.HotelsReacts.RemoveRange(hotelReacts);
+
                 //final: eliminar el hotel
                 _context.Hotels.Remove(hotelEntity);
                 await _context.SaveChangesAsync();

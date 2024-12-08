@@ -22,4 +22,9 @@ public class ReservationCreateDto
 
     [Display(Name = "Lista de habitaciones")]
     public List<string> AdditionalServicesList { get; set; }
+
+    //añadido por los metodos de Pago del Paypal
+    public string OrderId { get; set; }
+    public string CaptureId { get; set; }
+
 }

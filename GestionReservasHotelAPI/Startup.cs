@@ -44,6 +44,7 @@ public class Startup
         services.AddTransient<IDashboardAdminHotelService, DashboardAdminHotelService>();
         services.AddTransient<IDashboardAdminPageService, DashboardAdminPageService>();
         services.AddTransient<IHotelsReactsService, HotelsReactsService>();
+        services.AddTransient<IPayPalService, PayPalService>();
 
         //AddIdentity
         services.AddIdentity<UserEntity, IdentityRole>(options =>
