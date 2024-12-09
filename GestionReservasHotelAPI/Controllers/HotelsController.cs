@@ -39,7 +39,7 @@ public class HotelsController : ControllerBase
 
     //al ejecutarse este endpoint posteriormente se debe actualizar el rol del usuario que se acaba de añadirlo como su administrador
     [HttpPost]
-    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}")]
+    [Authorize(Roles = $"{RolesConstant.PAGEADMIN}, {RolesConstant.USER}")]
     public async Task<ActionResult<ResponseDto<List<HotelDto>>>> Create(HotelCreateDto dto)
     {
         var response = await _hotelsService.CreateAsync(dto);

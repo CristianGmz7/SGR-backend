@@ -185,11 +185,11 @@ public class HotelsService : IHotelsService
         };
     }
 
+    //hacer validacion si el dto.AdminUserId es nulo o vacio sea el _getUserId (permitir que users puedan crear hoteles en el controlador)
     public async Task<ResponseDto<HotelDto>> CreateAsync(HotelCreateDto dto)
     {
         using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-
             try
             {
                 //validaciones acerca del usuario que será encargado del hotel
@@ -208,7 +208,19 @@ public class HotelsService : IHotelsService
                     };
                 }
 
-                var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.AdminUserId);
+                var userEntity = new UserEntity();
+                if (dto.AdminUserId == "usuarioDesdeFrontend")
+                {
+                    var userId = _auditService.GetUserId();
+                    userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                }
+                else
+                {
+                    userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.AdminUserId);
+
+                }
+
+                //var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.AdminUserId);
 
                 if (userEntity == null)
                 {
@@ -244,6 +256,11 @@ public class HotelsService : IHotelsService
                 // TODO: Validar que el hotel no se repita. (este todo es viejo no tiene sentido)
 
                 var hotelEntity = _mapper.Map<HotelEntity>(dto);
+
+                if (dto.AdminUserId == "usuarioDesdeFrontend")
+                {
+                    hotelEntity.AdminUserId = _auditService.GetUserId();
+                }
 
                 _context.Hotels.Add(hotelEntity);
 
