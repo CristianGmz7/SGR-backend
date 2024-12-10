@@ -32,16 +32,22 @@ public class RoomsController : ControllerBase
 
     [HttpGet("GetByHotel/{id}")]
     [AllowAnonymous]
-    public async Task<ActionResult<ResponseDto<PaginationDto<HotelDetailDto>>>> GetAllByHotel(Guid id, 
-        int page = 1, 
-        DateTime filterStartDate = default, 
-        DateTime filterEndDate = default)
+    public async Task<ActionResult<ResponseDto<PaginationDto<HotelDetailDto>>>> GetAllByHotel(
+            Guid id, 
+            int page = 1, 
+            DateTime filterStartDate = default, 
+            DateTime filterEndDate = default,
+            double priceMin = -1,
+            double priceMax = -1,
+            string type = ""
+        )
     {
-        var response = await _roomsService.GetRoomsOneHotelAsync(id, page, filterStartDate, filterEndDate);
+        var response = await _roomsService.GetRoomsOneHotelAsync(id, page, filterStartDate, filterEndDate, priceMin, priceMax, type);
 
         return StatusCode(response.StatusCode, response);
     }
 
+    //Esto metodo no es para crear reservas sino para editar o eliminar alguna habitacion
     [HttpGet("GetByAdminHotel/{id}")]
     [Authorize(Roles = $"{RolesConstant.HOTELADMIN}")]
     public async Task<ActionResult<ResponseDto<PaginationDto<HotelDetailDto>>>> GetAllByAdminHotel(Guid id,

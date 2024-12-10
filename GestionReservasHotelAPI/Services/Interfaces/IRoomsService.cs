@@ -12,5 +12,6 @@ public interface IRoomsService
     Task<ResponseDto<RoomDto>> GetRoomById(Guid id);
     Task<ResponseDto<PaginationDto<HotelDetailDto>>> GetRoomsByAdminHotelAsync(Guid id, string searchTerm = "", int page = 1);
     Task<ResponseDto<List<RoomDto>>> GetRoomsListAsync();
-    Task<ResponseDto<PaginationDto<HotelDetailDto>>> GetRoomsOneHotelAsync(Guid id, int page = 1, DateTime filterStartDate = default, DateTime filterEndDate = default);
+    Task<ResponseDto<PaginationDto<HotelDetailDto>>> GetRoomsOneHotelAsync(Guid id, int page = 1, DateTime filterStartDate = default, 
+        DateTime filterEndDate = default, double priceMin = -1, double priceMax = -1, string type = "");
 }

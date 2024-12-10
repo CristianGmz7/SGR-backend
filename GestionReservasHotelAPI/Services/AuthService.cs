@@ -73,7 +73,8 @@ public class AuthService : IAuthService
                     Email = userEntity.Email,       //o dto.Email
                     Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                     TokenExpiration = jwtToken.ValidTo,
-                    RefreshToken = refreshToken
+                    RefreshToken = refreshToken,
+                    ProfilePictureUrl = userEntity.ProfilePictureUrl
                 }
             };
 
@@ -134,7 +135,8 @@ public class AuthService : IAuthService
                     Email = user.Email,
                     Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                     TokenExpiration = jwtToken.ValidTo,
-                    RefreshToken = refreshToken
+                    RefreshToken = refreshToken,
+                    ProfilePictureUrl = userEntity.ProfilePictureUrl
                 }
             };
 
@@ -258,7 +260,8 @@ public class AuthService : IAuthService
                 FullName = $"{userEntity.FirstName} {userEntity.LastName}",
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                 TokenExpiration = jwtToken.ValidTo,
-                RefreshToken = GenerateRefreshTokenString()
+                RefreshToken = GenerateRefreshTokenString(),
+                ProfilePictureUrl = userEntity.ProfilePictureUrl
             };
 
             //guardar refreshtoken en la base de datos

@@ -76,8 +76,13 @@ public class RoomsService : IRoomsService
     //el id del hotel, el numero de pagina y las fechas de inicio y fin
     //aqui no se toma en cuenta la condicion porque se supone que habitaciones que se listan estaran disponibles segun las fechas
     public async Task<ResponseDto<PaginationDto<HotelDetailDto>>> GetRoomsOneHotelAsync(
-        Guid id, int page = 1,
-        DateTime filterStartDate = default, DateTime filterEndDate = default)
+            Guid id, int page = 1,
+            DateTime filterStartDate = default, 
+            DateTime filterEndDate = default,
+            double priceMin = -1,
+            double priceMax = -1,
+            string type = ""
+        )
     {
         if (filterStartDate == default)
         {
@@ -122,9 +127,6 @@ public class RoomsService : IRoomsService
         
         int startIndex = (page - 1) * PAGE_SIZE;
 
-        //AQUI TENGO UN DILEMA CON EL FRONTEND: El Query sera estatico o se ira actualizando
-        //cuando se le filtrar y haya nuevo rango de fechas
-
         var roomEntityQuery = _context.Rooms
             .Include(x => x.Hotel)
             .Include(x => x.Reservations)
@@ -136,6 +138,19 @@ public class RoomsService : IRoomsService
                     rr.Reservation.StartDate < filterEndDate &&
                     rr.Reservation.FinishDate > filterStartDate)
             ));
+
+        if (priceMin != -1)
+        {
+            roomEntityQuery = roomEntityQuery.Where(x => x.PriceNight >= priceMin);
+        }        
+        if (priceMax != -1)
+        {
+            roomEntityQuery = roomEntityQuery.Where(x => x.PriceNight <= priceMax);
+        }
+        if (!string.IsNullOrEmpty(type))
+        {
+            roomEntityQuery = roomEntityQuery.Where(x => x.TypeRoom ==  type);
+        }
         
         int totalRooms = await roomEntityQuery.CountAsync();
 
